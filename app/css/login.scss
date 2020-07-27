@@ -1,0 +1,26 @@
+body{
+  background: #0f4c75;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.form-signin{
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px 40px;
+  width: 450px;
+  .logo img{
+    width: 250px;
+  }
+  label{
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-top: 16px;
+  }
+  button.btn-primary{
+    margin: 16px 0;
+  }
+}

@@ -1,0 +1,36 @@
+body {
+  background: #0f4c75;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 100vh;
+}
+
+.form-signin {
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px 40px;
+  width: 450px;
+}
+
+.form-signin .logo img {
+  width: 250px;
+}
+
+.form-signin label {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-top: 16px;
+}
+
+.form-signin button.btn-primary {
+  margin: 16px 0;
+}
+/*# sourceMappingURL=login.css.map */
