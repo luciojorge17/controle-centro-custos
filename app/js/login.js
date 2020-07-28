@@ -10,11 +10,13 @@ const habilitaBtn = () => {
   $('.form-signin button[type="submit"]').html('Entrar');
 }
 
+const erroServidor = 'Falha ao conectar no servidor';
+
 $('.form-signin').on('submit', (e) => {
   e.preventDefault();
   let form = new FormData($('.form-signin')[0]);
   $.ajax({
-    url: '../controller/login.php',
+    url: '../controller/login/login.php',
     type: 'post',
     data: form,
     contentType: false,
@@ -34,5 +36,13 @@ $('.form-signin').on('submit', (e) => {
         $('.login-error').empty();
       }, 5000);
     }
+  }).fail(() => {
+    habilitaBtn();
+    $('#txtSenha').val('');
+    $('#txtUsuario').focus();
+    $('.login-error').html(erroServidor);
+    setTimeout(() => {
+      $('.login-error').empty();
+    }, 5000);
   });
 })

@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (isset($_SESSION['idUsuario'])) {
+  header('Location: dashboard.php');
+}
+?>
+
 <!doctype html>
 <html lang="pt-br">
 

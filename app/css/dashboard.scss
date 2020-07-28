@@ -1,0 +1,55 @@
+aside{
+  position: fixed;
+  z-index: 500;
+  width: 320px;
+  height: 100vh;
+  background: #424242;
+
+  .aside-logo{
+    width: 200px;
+    padding: 2rem 0;
+  }
+
+  ul{
+    list-style: none;
+    padding: 0 20px;
+    li a{
+      display: block;
+      padding: 5px 15px;
+      color: #fff;
+      text-decoration: none !important;
+      border-radius: 5px;
+      font-weight: 300;
+      &:hover{
+        color: #bbe1fa;
+      }
+    }
+    li.active{
+      a{
+        background: #3282b8;
+      }
+    }
+  }
+
+}
+
+main{
+  margin-left: 320px;
+  width: calc(100% - 320px);
+
+  header{
+    padding: 1rem 0;
+  }
+
+  .inicio-logo{
+    width: 500px;
+  }
+
+  section#page-inicio{
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+}
