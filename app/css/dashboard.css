@@ -42,8 +42,27 @@ main header {
   padding: 1rem 0;
 }
 
+main header #btn-logoff {
+  width: 80px;
+  margin-left: 10px;
+}
+
+main h2 {
+  font-size: 20px;
+}
+
 main .inicio-logo {
   width: 500px;
+}
+
+main section label {
+  margin: 0;
+  font-size: 12px;
+}
+
+main .padding-sm .col, main .padding-sm .col-1, main .padding-sm .col-10, main .padding-sm .col-11, main .padding-sm .col-12, main .padding-sm .col-2, main .padding-sm .col-3, main .padding-sm .col-4, main .padding-sm .col-5, main .padding-sm .col-6, main .padding-sm .col-7, main .padding-sm .col-8, main .padding-sm .col-9, main .padding-sm .col-auto, main .padding-sm .col-lg, main .padding-sm .col-lg-1, main .padding-sm .col-lg-10, main .padding-sm .col-lg-11, main .padding-sm .col-lg-12, main .padding-sm .col-lg-2, main .padding-sm .col-lg-3, main .padding-sm .col-lg-4, main .padding-sm .col-lg-5, main .padding-sm .col-lg-6, main .padding-sm .col-lg-7, main .padding-sm .col-lg-8, main .padding-sm .col-lg-9, main .padding-sm .col-lg-auto, main .padding-sm .col-md, main .padding-sm .col-md-1, main .padding-sm .col-md-10, main .padding-sm .col-md-11, main .padding-sm .col-md-12, main .padding-sm .col-md-2, main .padding-sm .col-md-3, main .padding-sm .col-md-4, main .padding-sm .col-md-5, main .padding-sm .col-md-6, main .padding-sm .col-md-7, main .padding-sm .col-md-8, main .padding-sm .col-md-9, main .padding-sm .col-md-auto, main .padding-sm .col-sm, main .padding-sm .col-sm-1, main .padding-sm .col-sm-10, main .padding-sm .col-sm-11, main .padding-sm .col-sm-12, main .padding-sm .col-sm-2, main .padding-sm .col-sm-3, main .padding-sm .col-sm-4, main .padding-sm .col-sm-5, main .padding-sm .col-sm-6, main .padding-sm .col-sm-7, main .padding-sm .col-sm-8, main .padding-sm .col-sm-9, main .padding-sm .col-sm-auto, main .padding-sm .col-xl, main .padding-sm .col-xl-1, main .padding-sm .col-xl-10, main .padding-sm .col-xl-11, main .padding-sm .col-xl-12, main .padding-sm .col-xl-2, main .padding-sm .col-xl-3, main .padding-sm .col-xl-4, main .padding-sm .col-xl-5, main .padding-sm .col-xl-6, main .padding-sm .col-xl-7, main .padding-sm .col-xl-8, main .padding-sm .col-xl-9, main .padding-sm .col-xl-auto {
+  padding-right: 0;
+  padding-left: 15px;
 }
 
 main section#page-inicio {
@@ -57,5 +76,14 @@ main section#page-inicio {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+}
+
+main table {
+  font-size: 12px;
+}
+
+main #tbody-orcamento {
+  height: 50vh;
+  overflow-y: scroll;
 }
 /*# sourceMappingURL=dashboard.css.map */

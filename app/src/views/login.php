@@ -40,6 +40,7 @@ if (isset($_SESSION['idUsuario'])) {
     <div class="logo text-center">
       <img src="../../images/logo_dark.png" alt="New Norte logo">
     </div>
+    <input type="hidden" name="action" value="login">
     <label for="txtUsuario">Usuário</label>
     <input type="text" name="txtUsuario" id="txtUsuario" class="form-control" required autofocus>
     <label for="txtSenha">Senha</label>

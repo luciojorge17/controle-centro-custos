@@ -16,7 +16,7 @@ $('.form-signin').on('submit', (e) => {
   e.preventDefault();
   let form = new FormData($('.form-signin')[0]);
   $.ajax({
-    url: '../controller/login/login.php',
+    url: '../controller/login.php',
     type: 'post',
     data: form,
     contentType: false,

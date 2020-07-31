@@ -3,6 +3,60 @@ session_start();
 if (!isset($_SESSION['idUsuario'])) {
   header('Location: login.php');
 }
+
+$meses = [
+  1 => [
+    'mes' => 'Janeiro',
+    'abreviatura' => 'JAN'
+  ],
+  2 => [
+    'mes' => 'Fevereiro',
+    'abreviatura' => 'FEV'
+  ],
+  3 => [
+    'mes' => 'Março',
+    'abreviatura' => 'MAR'
+  ],
+  4 => [
+    'mes' => 'Abril',
+    'abreviatura' => 'ABR'
+  ],
+  5 => [
+    'mes' => 'Maio',
+    'abreviatura' => 'MAI'
+  ],
+  6 => [
+    'mes' => 'Junho',
+    'abreviatura' => 'JUN'
+  ],
+  7 => [
+    'mes' => 'Julho',
+    'abreviatura' => 'JUL'
+  ],
+  8 => [
+    'mes' => 'Agosto',
+    'abreviatura' => 'AGO'
+  ],
+  9 => [
+    'mes' => 'Setembro',
+    'abreviatura' => 'SET'
+  ],
+  10 => [
+    'mes' => 'Outubro',
+    'abreviatura' => 'OUT'
+  ],
+  11 => [
+    'mes' => 'Novembro',
+    'abreviatura' => 'NOV'
+  ],
+  12 => [
+    'mes' => 'Dezembro',
+    'abreviatura' => 'DEZ'
+  ]
+]
+
+
+
 ?>
 
 <!doctype html>
@@ -41,25 +95,21 @@ if (!isset($_SESSION['idUsuario'])) {
       <img src="../../images/logo_light.png" alt="New Norte Logo" class="aside-logo">
     </div>
     <ul>
-      <li class="<?php echo $active[0]; ?>"><a href="#">Início</a></li>
+      <li class="<?php echo $active[0]; ?>"><a href="dashboard.php">Início</a></li>
       <li class="<?php echo $active[1]; ?>"><a href="#">Manutenção de orçamento</a></li>
-      <li class="<?php echo $active[2]; ?>"><a href="#">Autorização de compra</a></li>
-      <li class="<?php echo $active[3]; ?>"><a href="#">Acompanhamento OC Saldos</a></li>
-      <li class="<?php echo $active[4]; ?>"><a href="#">Cadastrar usuário</a></li>
-      <li class="<?php echo $active[5]; ?>"><a href="#">Cadastrar orçamento</a></li>
+      <li class="<?php echo $active[2]; ?>"><a href="autorizacao_compra.php">Autorização de compra</a></li>
+      <li class="<?php echo $active[3]; ?>"><a href="acompanhamento.php">Acompanhamento OC Saldos</a></li>
+      <li class="<?php echo $active[4]; ?>"><a href="usuario_centro_custo.php">Cadastrar usuário</a></li>
+      <li class="<?php echo $active[5]; ?>"><a href="orcamento.php">Orçamento</a></li>
     </ul>
-    <div class="text-center mt-4 align-items-center text-light">
-      <?php echo $_SESSION['nomeUsuario']; ?><br>
-      <button class="btn btn-danger" onclick="sair()">Sair</button>
-    </div>
   </aside>
 
   <main>
     <header>
       <div class="container">
         <div class="row">
-          <div class="col-12">
-            <select name="slcTrocaFilial" id="slcTrocaFilial" class="form-control">
+          <div class="col-12 col-md-9">
+            <select name="slcTrocaFilial" id="slcTrocaFilial" class="form-control form-control-sm">
               <option value="0">Mostrar dados de todas as filiais</option>
               <?php
               include_once '../model/filiaisModel.php';
@@ -71,6 +121,10 @@ if (!isset($_SESSION['idUsuario'])) {
               ?>
             </select>
           </div>
+          <div class="col-12 col-md-3 text-right">
+            <?php echo $_SESSION['nomeUsuario']; ?>
+            <button id="btn-logoff" class="btn btn-danger btn-sm" onclick="sair()">Sair</button>
+          </div>
         </div>
       </div>
     </header>
@@ -79,6 +133,7 @@ if (!isset($_SESSION['idUsuario'])) {
       <div class="row">
         <div class="col-12 pt-2 pb-2">
           <h2><?php echo (isset($titulo)) ? $titulo : 'Sem título'; ?></h2>
+          <hr>
         </div>
       </div>
     </div>
