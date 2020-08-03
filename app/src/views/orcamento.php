@@ -51,7 +51,7 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
         <button class="btn btn-secondary btn-sm btn-block">...</button>
       </div>
       <div class="col-12 col-md-6 col-lg-5">
-        <input readonly type="text" name="txtNomeUsuario" id="txtNomeUsuario" class="form-control form-control-sm">
+        <input readonly type="text" name="txtNomeCentroCusto" id="txtNomeCentroCusto" class="form-control form-control-sm">
       </div>
       <div class="col-12 col-md-4 col-lg-3">
         <button class="btn btn-primary btn-sm">Carregar Contas Gerenciais</button>

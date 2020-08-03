@@ -99,7 +99,13 @@ $meses = [
     </div>
     <ul>
       <li class="<?php echo $active[0]; ?>"><a href="dashboard.php">Início</a></li>
-      <li class="<?php echo $active[1]; ?>"><a href="#">Manutenção de orçamento</a></li>
+      <?php
+      if (isAdministrador($_SESSION['idUsuario'])) {
+      ?>
+        <li class="<?php echo $active[1]; ?>"><a href="manutencao_orcamento.php">Manutenção de orçamento</a></li>
+      <?php
+      }
+      ?>
       <li class="<?php echo $active[2]; ?>"><a href="autorizacao_compra.php">Autorização de compra</a></li>
       <li class="<?php echo $active[3]; ?>"><a href="acompanhamento.php">Acompanhamento OC Saldos</a></li>
       <?php

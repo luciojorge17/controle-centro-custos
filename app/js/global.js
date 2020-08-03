@@ -20,8 +20,19 @@ const sair = () => {
 }
 
 $('.maskPercentual').maskMoney();
+$('.maskValor').maskMoney({
+  allowNegative: false,
+  thousands: '.',
+  decimal: ',',
+  affixesStay: false
+});
 $('.maskPercentual').on('blur', function () {
   if ($(this).val() == '') {
     $(this).val("0.00");
+  }
+})
+$('.maskValor').on('blur', function () {
+  if ($(this).val() == '') {
+    $(this).val("0,00");
   }
 })
