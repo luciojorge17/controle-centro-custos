@@ -55,7 +55,7 @@ main .inicio-logo {
   width: 500px;
 }
 
-main section label {
+main label {
   margin: 0;
   font-size: 12px;
 }
@@ -85,5 +85,9 @@ main table {
 main #tbody-orcamento {
   height: 50vh;
   overflow-y: scroll;
+}
+
+.table td, .table th {
+  vertical-align: middle;
 }
 /*# sourceMappingURL=dashboard.css.map */

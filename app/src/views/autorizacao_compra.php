@@ -15,7 +15,8 @@ require_once 'templates/cabecalho.php';
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <button class="btn btn-primary btn-sm">Autorizar</button>
+        <button class="btn btn-primary btn-sm" onclick="alterarStatusOrdem(1)">Autorizar</button>
+        <button class="btn btn-danger btn-sm" onclick="alterarStatusOrdem(2)">Reprovar</button>
       </div>
     </div>
     <div class="row mt-4">
@@ -31,12 +32,20 @@ require_once 'templates/cabecalho.php';
               <th scope="col" class="text-center">Emissão</th>
               <th scope="col">Entidade</th>
               <th scope="col" class="text-right">Valor</th>
-              <th scope="col" class="tetx-center">Autorizar</th>
+              <th scope="col" class="text-center">Autorizar</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="resultListaOrdens">
           </tbody>
         </table>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12">
+        Observação da Ordem de Compra
+      </div>
+      <div class="col-12">
+        <textarea name="txtObservacao" id="txtObservacao" rows="3" class="form-control form-control-sm" readonly></textarea>
       </div>
     </div>
     <div class="row mt-4">
@@ -55,7 +64,7 @@ require_once 'templates/cabecalho.php';
               <th scope="col" class="text-right">Vl. Total</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="resultItensOrdem">
           </tbody>
         </table>
       </div>
@@ -77,7 +86,7 @@ require_once 'templates/cabecalho.php';
               <th scope="col" class="text-right">Vl. Ord. Compra</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="resultContasGerenciaisOrdem">
           </tbody>
         </table>
       </div>
@@ -87,4 +96,145 @@ require_once 'templates/cabecalho.php';
 
 <?php
 require_once 'templates/scripts.php';
+?>
+
+<script>
+  window.onload = () => {
+    listarOrdensDeCompra();
+  }
+
+  let ordens = [];
+
+  const alterarStatusOrdem = (tipo) => {
+    if (ordens.length == 0) {
+      alert('Selecione pelo menos uma ordem de compra!');
+      return;
+    }
+    let action = (tipo == 1) ? 'autorizar' : 'reprovar';
+    if (window.confirm(`Deseja mesmo ${action} as ordens de compra?`)) {
+      $.ajax({
+        url: '../controller/ordemCompra.php',
+        type: 'post',
+        data: {
+          action,
+          ordens
+        }
+      }).done(() => {
+        window.location.reload();
+      });
+    }
+  }
+
+  const adicionarRemoverOrdem = (elemento, idOrdem) => {
+    ($(elemento).prop('checked')) ? ordens.push(idOrdem): ordens.splice(ordens.indexOf(idOrdem), 1);
+  };
+
+  const listarOrdensDeCompra = () => {
+    $.ajax({
+      url: '../controller/ordemCompra.php',
+      type: 'post',
+      data: {
+        action: 'listarOrdens'
+      }
+    }).done((data) => {
+      let response = JSON.parse(data);
+      let html = ``;
+      $.each(response, (index, ordem) => {
+        if (index == 0) {
+          detalhesOrdem(ordem.cd_ordem_compra);
+        }
+        html +=
+          `<tr onclick="detalhesOrdem(${ordem.cd_ordem_compra})" style="cursor: pointer;">
+            <th scope="row">${ordem.cd_ordem_compra}</th>
+            <td>${ordem.cd_filial}</td>
+            <td class="text-center">${ordem.dt_emissao}</td>
+            <td>${ordem.ds_entidade}</td>
+            <td class="text-right">${ordem.vl_total}</td>
+            <td class="text-center">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="ordem-${ordem.cd_ordem_compra}" onchange="adicionarRemoverOrdem(this, ${ordem.cd_ordem_compra})">
+                <label class="custom-control-label" for="ordem-${ordem.cd_ordem_compra}"></label>
+              </div>
+            </td>
+          </tr>`;
+      });
+      $('#resultListaOrdens').html(html);
+    });
+  }
+
+  const detalhesOrdem = (idOrdem) => {
+    listaItensOrdemDeCompra(idOrdem);
+    listaContasGerenciaisOrdemDeCompra(idOrdem);
+    getObservacao(idOrdem);
+  }
+
+  const listaItensOrdemDeCompra = (idOrdem) => {
+    $.ajax({
+      url: '../controller/ordemCompra.php',
+      type: 'post',
+      data: {
+        action: 'listarItensOrdem',
+        idOrdem
+      }
+    }).done((data) => {
+      let response = JSON.parse(data);
+      let html = ``;
+      $.each(response, (index, item) => {
+        html +=
+          `<tr>
+            <th scope="row">${item.cd_item}</th>
+            <td>${item.cd_material}</td>
+            <td>${item.ds_material}</td>
+            <td class="text-right">${item.nr_quantidade}</td>
+            <td class="text-right">${item.vl_unitario}</td>
+            <td class="text-right">${item.vl_total}</td>
+          </tr>`;
+      });
+      $('#resultItensOrdem').html(html);
+    });
+  }
+
+  const listaContasGerenciaisOrdemDeCompra = (idOrdem) => {
+    $.ajax({
+      url: '../controller/ordemCompra.php',
+      type: 'post',
+      data: {
+        action: 'listarContasGerenciaisOrdem',
+        idOrdem
+      }
+    }).done((data) => {
+      let response = JSON.parse(data);
+      let html = ``;
+      $.each(response, (index, cg) => {
+        html +=
+          `<tr>
+            <th scope="row">${cg.cd_conta_gerencial}</th>
+            <td>${cg.ds_classificacao}</td>
+            <td>${cg.ds_conta_gerencial}</td>
+            <td class="text-right">${cg.vl_limite}</td>
+            <td class="text-right">${cg.vl_utilizado}</td>
+            <td class="text-right">${cg.vl_disponivel}</td>
+            <td class="text-right">${cg.vl_ordem_compra}</td>
+          </tr>`;
+      });
+      $('#resultContasGerenciaisOrdem').html(html);
+    });
+  }
+
+  const getObservacao = (idOrdem) => {
+    $.ajax({
+      url: '../controller/ordemCompra.php',
+      type: 'post',
+      data: {
+        action: 'getObservacaoOrdem',
+        idOrdem
+      }
+    }).done((data) => {
+      let response = JSON.parse(data);
+      $('#txtObservacao').val(response);
+    });
+  }
+</script>
+
+<?php
 require_once 'templates/rodape.php';

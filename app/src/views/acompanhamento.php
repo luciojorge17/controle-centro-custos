@@ -9,6 +9,7 @@ $active = [
   5 => ''
 ];
 require_once 'templates/cabecalho.php';
+include_once '../model/centroCustoModel.php';
 ?>
 
 <section id="page-acompanhamento">
@@ -40,6 +41,12 @@ require_once 'templates/cabecalho.php';
         <label for="slcCentroCusto">Centro de Custo</label>
         <select name="slcCentroCusto" id="slcCentroCusto" class="form-control form-control-sm">
           <option value="">Selecione...</option>
+          <?php
+          $queryCentroCustos = getCentroCustosUsuario($_SESSION['idUsuario'], $_SESSION['filial']);
+          foreach ($queryCentroCustos as $cc) {
+            echo '<option value="' . $cc["cd_centro_custo"] . '">' . $cc["ds_centro_custo"] . '</option>';
+          }
+          ?>
         </select>
       </div>
       <div class="col-12 col-md-4 col-lg-2">

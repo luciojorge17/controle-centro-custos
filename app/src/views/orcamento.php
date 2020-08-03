@@ -9,6 +9,11 @@ $active = [
   5 => 'active'
 ];
 require_once 'templates/cabecalho.php';
+
+if (!isAdministrador($_SESSION['idUsuario'])) {
+  header('Location: dashboard.php');
+}
+
 ?>
 
 <section id="page-orcamento">

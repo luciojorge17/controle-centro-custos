@@ -18,3 +18,10 @@ const sair = () => {
     window.location.href = 'login.php';
   });
 }
+
+$('.maskPercentual').maskMoney();
+$('.maskPercentual').on('blur', function () {
+  if ($(this).val() == '') {
+    $(this).val("0.00");
+  }
+})

@@ -1,6 +1,4 @@
 <?php
-header('charset=utf-8');
-
 $host = 'localhost\SQLEXPRESS';
 $database = 'nGestao3';
 $user = 'sa';

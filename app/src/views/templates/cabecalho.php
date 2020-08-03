@@ -4,6 +4,9 @@ if (!isset($_SESSION['idUsuario'])) {
   header('Location: login.php');
 }
 
+include_once '../model/loginModel.php';
+include_once '../model/filiaisModel.php';
+
 $meses = [
   1 => [
     'mes' => 'Janeiro',
@@ -99,8 +102,18 @@ $meses = [
       <li class="<?php echo $active[1]; ?>"><a href="#">Manutenção de orçamento</a></li>
       <li class="<?php echo $active[2]; ?>"><a href="autorizacao_compra.php">Autorização de compra</a></li>
       <li class="<?php echo $active[3]; ?>"><a href="acompanhamento.php">Acompanhamento OC Saldos</a></li>
-      <li class="<?php echo $active[4]; ?>"><a href="usuario_centro_custo.php">Cadastrar usuário</a></li>
-      <li class="<?php echo $active[5]; ?>"><a href="orcamento.php">Orçamento</a></li>
+      <?php
+      if (isAdministrador($_SESSION['idUsuario'])) {
+      ?>
+        <li class="<?php echo $active[4]; ?>"><a href="usuario_centro_custo.php">Cadastrar usuário</a></li>
+      <?php
+      }
+      if (isAdministrador($_SESSION['idUsuario'])) {
+      ?>
+        <li class="<?php echo $active[5]; ?>"><a href="orcamento.php">Cadastrar Orçamento</a></li>
+      <?php
+      }
+      ?>
     </ul>
   </aside>
 
@@ -112,7 +125,6 @@ $meses = [
             <select name="slcTrocaFilial" id="slcTrocaFilial" class="form-control form-control-sm">
               <option value="0">Mostrar dados de todas as filiais</option>
               <?php
-              include_once '../model/filiaisModel.php';
               $queryFiliais = getFiliais();
               foreach ($queryFiliais as $filial) {
                 $selected = ($filial->CD_FILIAL == $_SESSION['filial']) ? 'selected' : '';

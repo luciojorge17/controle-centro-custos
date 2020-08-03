@@ -53,11 +53,9 @@ main{
     width: 500px;
   }
 
-  section{
-    label{
-      margin: 0;
-      font-size: 12px;
-    }
+  label{
+    margin: 0;
+    font-size: 12px;
   }
 
   .padding-sm{
@@ -83,4 +81,8 @@ main{
     overflow-y: scroll;
   }
 
+}
+
+.table td, .table th {
+  vertical-align: middle;
 }
