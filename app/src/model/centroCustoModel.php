@@ -118,3 +118,50 @@ function getCentroCustoByContaGerencial($idConta)
   $resultado = odbc_fetch_object($consulta);
   return $resultado->CD_CENTRO_CUSTO;
 }
+
+function getCentroCustosOrcamentoAnual($condicao = null)
+{
+  require '../../config/database.php';
+  $where = (!empty($condicao)) ? 'WHERE ' . $condicao : '';
+  $sql =
+    "SELECT NNOA.CD_CENTRO_CUSTO, TCCC.DS_CENTRO_CUSTO, TCCC.DS_CLASSIFICACAO, TCCC.X_TIPO 
+	    FROM TBL_NEWNORTE_ORCAMENTO_ANUAL NNOA 
+		    INNER JOIN TBL_CUSTOS_CENTRO_CUSTOS TCCC ON NNOA.CD_CENTRO_CUSTO = TCCC.CD_CENTRO_CUSTO
+			    $where 
+            GROUP BY NNOA.CD_CENTRO_CUSTO,  TCCC.DS_CENTRO_CUSTO, TCCC.DS_CLASSIFICACAO, TCCC.X_TIPO";
+  $consulta = odbc_exec($conexao, $sql);
+  $centroCustos = [];
+  while ($centroCusto = odbc_fetch_object($consulta)) {
+    array_push($centroCustos, [
+      'cd_centro_custo' => $centroCusto->CD_CENTRO_CUSTO,
+      'ds_classificacao' => $centroCusto->DS_CLASSIFICACAO,
+      'x_tipo' => $centroCusto->X_TIPO,
+      'ds_centro_custo' => utf8_encode($centroCusto->DS_CENTRO_CUSTO)
+    ]);
+  }
+  return $centroCustos;
+}
+
+function getContasGerenciaisOrcamentoAnual($condicao = null, $campoMes)
+{
+  require '../../config/database.php';
+  $where = (!empty($condicao)) ? 'WHERE ' . $condicao : '';
+  $sql =
+    "SELECT NNOA.CD_CONTA_GERENCIAL, TCCG.DS_CONTA_GERENCIAL, TCCG.DS_CLASSIFICACAO, TCCG.X_TIPO, NNOA.$campoMes
+      FROM TBL_NEWNORTE_ORCAMENTO_ANUAL NNOA 
+        INNER JOIN TBL_CONTABIL_PLANO_CONTAS_GERENCIAL TCCG ON NNOA.CD_CONTA_GERENCIAL = TCCG.CD_CONTA_GERENCIAL
+          $where
+            GROUP BY NNOA.CD_CONTA_GERENCIAL,  TCCG.DS_CONTA_GERENCIAL, TCCG.DS_CLASSIFICACAO, TCCG.X_TIPO, $campoMes";
+  $consulta = odbc_exec($conexao, $sql);
+  $contasGerenciais = [];
+  while ($cg = odbc_fetch_object($consulta)) {
+    array_push($contasGerenciais, [
+      'cd_conta_gerencial' => $cg->CD_CONTA_GERENCIAL,
+      'ds_classificacao' => $cg->DS_CLASSIFICACAO,
+      'x_tipo' => $cg->X_TIPO,
+      'ds_conta_gerencial' => utf8_encode($cg->DS_CONTA_GERENCIAL),
+      'valor_atual' => number_format($cg->$campoMes, 2, ',', '.')
+    ]);
+  }
+  return $contasGerenciais;
+}

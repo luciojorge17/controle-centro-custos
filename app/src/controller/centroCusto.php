@@ -50,4 +50,67 @@ switch ($action) {
       insertUsuarioConta($dados);
     }
     break;
+  case 'listarCentroCustosOrcamentoAnual':
+    $ano = $_POST['ano'];
+    $campo = $_POST['campo'];
+    $pesquisa = $_POST['pesquisa'];
+    $condicao = "NNOA.DT_ANO = '$ano'";
+    if (!empty($pesquisa)) {
+      $condicao .= ($campo == 'centroCusto') ? " AND TCCC.DS_CENTRO_CUSTO LIKE '%$pesquisa%'" : " AND TCCC.DS_CLASSIFICACAO LIKE '$pesquisa%'";
+    }
+    $queryCentroCustos = getCentroCustosOrcamentoAnual($condicao);
+    echo json_encode($queryCentroCustos);
+    break;
+  case 'listarContasGerenciaisOrcamentoAnual':
+    $mes = $_POST['mes'];
+    $ano = $_POST['ano'];
+    $campo = $_POST['campo'];
+    $pesquisa = $_POST['pesquisa'];
+    $centroCusto = $_POST['cdCentroCusto'];
+    $colunaMes = '';
+    switch ($mes) {
+      case 1:
+        $colunaMes = 'VL_MES_JAN';
+        break;
+      case 2:
+        $colunaMes = 'VL_MES_FEV';
+        break;
+      case 3:
+        $colunaMes = 'VL_MES_MAR';
+        break;
+      case 4:
+        $colunaMes = 'VL_MES_ABR';
+        break;
+      case 5:
+        $colunaMes = 'VL_MES_MAI';
+        break;
+      case 6:
+        $colunaMes = 'VL_MES_JUN';
+        break;
+      case 7:
+        $colunaMes = 'VL_MES_JUL';
+        break;
+      case 8:
+        $colunaMes = 'VL_MES_AGO';
+        break;
+      case 9:
+        $colunaMes = 'VL_MES_SET';
+        break;
+      case 10:
+        $colunaMes = 'VL_MES_OUT';
+        break;
+      case 11:
+        $colunaMes = 'VL_MES_NOV';
+        break;
+      case 12:
+        $colunaMes = 'VL_MES_DEZ';
+        break;
+    }
+    $condicao = "NNOA.DT_ANO = '$ano' AND NNOA.CD_CENTRO_CUSTO = $centroCusto";
+    if (!empty($pesquisa)) {
+      $condicao .= ($campo == 'contaGerencial') ? " AND TCCG.DS_CONTA_GERENCIAL LIKE '%$pesquisa%'" : " AND TCCG.DS_CLASSIFICACAO LIKE '$pesquisa%'";
+    }
+    $queryContasGerenciais = getContasGerenciaisOrcamentoAnual($condicao, $colunaMes);
+    echo json_encode($queryContasGerenciais);
+    break;
 }

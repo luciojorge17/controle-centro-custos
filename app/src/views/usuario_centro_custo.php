@@ -176,8 +176,8 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
         <form id="frmBuscaContasGerenciais" class="row">
           <input type="hidden" name="action" value="listarContasGerenciais">
           <div class="col-12 col-md-4 col-lg-3">
-            <label for="slcContaGerrencialCampo">Campo</label>
-            <select name="slcContaGerrencialCampo" id="slcContaGerrencialCampo" class="form-control form-control-sm" required>
+            <label for="slcContaGerencialCampo">Campo</label>
+            <select name="slcContaGerencialCampo" id="slcContaGerencialCampo" class="form-control form-control-sm" required>
               <option value="contaGerencial">Conta Gerencial</option>
               <option value="classificacao">Classificação</option>
             </select>
