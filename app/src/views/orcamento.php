@@ -32,7 +32,7 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
       <div class="col-12 col-md-2 col-lg-1">
         <select name="slcAno" id="slcAno" class="form-control form-control-sm">
           <?php
-          for ($ano = date('Y'); $ano >= (date('Y') - 5); $ano--) {
+          for ($ano = date('Y'); $ano <= (date('Y') + 3); $ano++) {
             $selected = ($ano == date('Y')) ? 'selected' : '';
             echo '<option ' . $selected . ' value="' . $ano . '">' . $ano . '</option>';
           }
