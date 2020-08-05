@@ -165,3 +165,40 @@ function getContasGerenciaisOrcamentoAnual($condicao = null, $campoMes)
   }
   return $contasGerenciais;
 }
+
+function getContasGerenciaisCentroCustoOrcamentoAnual($condicao = null)
+{
+  require '../../config/database.php';
+  $where = (!empty($condicao)) ? 'WHERE ' . $condicao : '';
+  $sql = "SELECT NNOA.CD_ID, NNOA.CD_FILIAL, TCCG.DS_CONTA_GERENCIAL, NNOA.VL_TOTAL_ANO, NNOA.VL_MES_JAN, NNOA.VL_MES_FEV, NNOA.VL_MES_MAR, NNOA.VL_MES_ABR, NNOA.VL_MES_MAI, NNOA.VL_MES_JUN, NNOA.VL_MES_JUL, NNOA.VL_MES_AGO, NNOA.VL_MES_SET, NNOA.VL_MES_OUT, NNOA.VL_MES_NOV, NNOA.VL_MES_DEZ
+            FROM TBL_NEWNORTE_ORCAMENTO_ANUAL NNOA 
+              INNER JOIN TBL_CONTABIL_PLANO_CONTAS_GERENCIAL TCCG ON NNOA.CD_CONTA_GERENCIAL = TCCG.CD_CONTA_GERENCIAL 
+                WHERE $condicao 
+                  ORDER BY NNOA.CD_FILIAL ASC";
+  $consulta = odbc_exec($conexao, $sql);
+  $contasGerenciais = [];
+  $contador = 1;
+  while ($cg = odbc_fetch_object($consulta)) {
+    array_push($contasGerenciais, [
+      'item' => $contador,
+      'cd_id' => $cg->CD_ID,
+      'cd_filial' => $cg->CD_FILIAL,
+      'ds_conta_gerencial' => utf8_encode($cg->DS_CONTA_GERENCIAL),
+      'vl_total_ano' => number_format($cg->VL_TOTAL_ANO, 2, ',', '.'),
+      'vl_mes_jan' => number_format($cg->VL_MES_JAN, 2, ',', '.'),
+      'vl_mes_fev' => number_format($cg->VL_MES_FEV, 2, ',', '.'),
+      'vl_mes_mar' => number_format($cg->VL_MES_MAR, 2, ',', '.'),
+      'vl_mes_abr' => number_format($cg->VL_MES_ABR, 2, ',', '.'),
+      'vl_mes_mai' => number_format($cg->VL_MES_MAI, 2, ',', '.'),
+      'vl_mes_jun' => number_format($cg->VL_MES_JUN, 2, ',', '.'),
+      'vl_mes_jul' => number_format($cg->VL_MES_JUL, 2, ',', '.'),
+      'vl_mes_ago' => number_format($cg->VL_MES_AGO, 2, ',', '.'),
+      'vl_mes_set' => number_format($cg->VL_MES_SET, 2, ',', '.'),
+      'vl_mes_out' => number_format($cg->VL_MES_OUT, 2, ',', '.'),
+      'vl_mes_nov' => number_format($cg->VL_MES_NOV, 2, ',', '.'),
+      'vl_mes_dez' => number_format($cg->VL_MES_DEZ, 2, ',', '.')
+    ]);
+    $contador++;
+  }
+  return $contasGerenciais;
+}

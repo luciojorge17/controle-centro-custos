@@ -90,4 +90,17 @@ main #tbody-orcamento {
 .table td, .table th {
   vertical-align: middle;
 }
+
+#tbody-orcamento {
+  font-size: 10px;
+}
+
+#tbody-orcamento input {
+  font-size: 10px;
+}
+
+#tbody-orcamento .form-control-sm {
+  padding: 0;
+  padding-left: 2px;
+}
 /*# sourceMappingURL=dashboard.css.map */

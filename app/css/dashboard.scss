@@ -86,3 +86,14 @@ main{
 .table td, .table th {
   vertical-align: middle;
 }
+
+#tbody-orcamento{
+  font-size: 10px;
+  input{
+    font-size: 10px;
+  }
+  .form-control-sm{
+    padding: 0;
+    padding-left: 2px;
+  }
+}

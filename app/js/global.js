@@ -36,3 +36,11 @@ $('.maskValor').on('blur', function () {
     $(this).val("0,00");
   }
 })
+$(document.body).on('keyup', $('.maskValor'), function () {
+  $('.maskValor').maskMoney({
+    allowNegative: false,
+    thousands: '.',
+    decimal: ',',
+    affixesStay: false
+  });
+})
