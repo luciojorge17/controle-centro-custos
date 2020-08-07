@@ -10,3 +10,12 @@ function getFiliais()
   }
   return $filiais;
 }
+
+function getIdEmpresa($idFilial)
+{
+  require '../../config/database.php';
+  $sql = "SELECT CD_EMPRESA FROM TBL_EMPRESAS_FILIAIS WHERE CD_FILIAL = $idFilial";
+  $consulta = odbc_exec($conexao, $sql);
+  $filial = odbc_fetch_object($consulta);
+  return $filial->CD_EMPRESA;
+}

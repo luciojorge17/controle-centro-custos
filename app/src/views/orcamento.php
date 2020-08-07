@@ -54,7 +54,7 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
         <input readonly type="text" name="txtNomeCentroCusto" id="txtNomeCentroCusto" class="form-control form-control-sm">
       </div>
       <div class="col-12 col-md-4 col-lg-3">
-        <button class="btn btn-primary btn-sm">Carregar Contas Gerenciais</button>
+        <button class="btn btn-primary btn-sm" data-toggle="modal" onclick="abreModalContasGerenciais()">Carregar Contas Gerenciais</button>
       </div>
     </div>
     <div class="container mt-5">
@@ -134,6 +134,58 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
   </div>
 </div>
 
+<div class="modal fade" id="modalContasGerenciais" tabindex="-1" role="dialog" aria-labelledby="modalContasGerenciaisLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalContasGerenciaisLabel">Gravar Conta Gerencial</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="frmBuscaContasGerenciais" class="row">
+          <input type="hidden" name="action" value="listarContasGerenciais">
+          <div class="col-12 col-md-4 col-lg-3">
+            <label for="slcContaGerencialCampo">Campo</label>
+            <select name="slcContaGerencialCampo" id="slcContaGerencialCampo" class="form-control form-control-sm" required>
+              <option value="contaGerencial">Conta Gerencial</option>
+              <option value="classificacao">Classificação</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-8 col-lg-9">
+            <label for="txtContaGerencialTexto">Texto</label>
+            <input type="text" name="txtContaGerencialTexto" id="txtContaGerencialTexto" class="form-control form-control-sm">
+          </div>
+        </form>
+        <div class="row mt-4">
+          <div class="col-12 text-right">
+            <button class="btn btn-outline-danger btn-sm" onclick="limparSelecaoContas()">Desmarcar tudo</button>
+            <button class="btn btn-outline-primary btn-sm" onclick="selecionarTodasAsContas()">Marcar tudo</button>
+          </div>
+          <div class="col-12">
+            <table class="table table-sm table-hover table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Código</th>
+                  <th scope="col">Classificação</th>
+                  <th scope="col">Conta Gerencial</th>
+                  <th scope="col" class="text-center">Gravar</th>
+                </tr>
+              </thead>
+              <tbody id="resultListaContasGerenciais">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-sm" onclick="salvarContasGerenciaisOrcamento()">Gravar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php
 require_once 'templates/scripts.php';
 ?>
@@ -144,6 +196,100 @@ require_once 'templates/scripts.php';
     $('#txtNomeCentroCusto').val(descricao);
     $('#modalCentroCustos').modal('hide');
     getContasGerenciaisCentroCustoAnual(id);
+  }
+
+  let contas = [];
+
+  const adicionarRemoverConta = (elemento, idConta) => {
+    ($(elemento).prop('checked')) ? contas.push(idConta): contas.splice(contas.indexOf(idConta), 1);
+  };
+
+  const limparSelecaoContas = () => {
+    $('.checkbox-conta').prop('checked', false);
+    while (contas.length) {
+      contas.pop();
+    }
+  }
+
+  const selecionarTodasAsContas = () => {
+    limparSelecaoContas();
+    $('.checkbox-conta').prop('checked', true);
+    let elementos = $('.checkbox-conta');
+    $.each(elementos, (index, el) => {
+      let idConta = el.id.replace('cg-', '');
+      contas.push(parseInt(idConta));
+    });
+  }
+
+  const salvarContasGerenciaisOrcamento = () => {
+    let centroCusto = $('#numCentroCusto').val(),
+      ano = $('#slcAno').val();
+    if (contas.length == 0) {
+      alert('Selecione pelo menos uma conta gerencial!');
+      return;
+    }
+    if (window.confirm(`Deseja mesmo gravar as contas gerenciais para este orçamento?`)) {
+      $.ajax({
+        url: '../controller/centroCusto.php',
+        type: 'post',
+        data: {
+          action: 'adicionarContasOrcamento',
+          contas,
+          ano,
+          centroCusto
+        }
+      }).done(() => {
+        $('#modalContasGerenciais').modal('hide');
+        getContasGerenciaisCentroCustoAnual($('#numCentroCusto').val());
+      });
+    }
+  }
+
+  $('#frmBuscaContasGerenciais').on('submit', (e) => {
+    e.preventDefault();
+    listarContasGerenciaisModal();
+  });
+
+  const listarContasGerenciaisModal = () => {
+    let campo = $('#slcContaGerencialCampo').val(),
+      pesquisa = $('#txtContaGerencialTexto').val();
+    $.ajax({
+      url: '../controller/centroCusto.php',
+      type: 'post',
+      data: {
+        action: 'listarContasGerenciaisGridOrcamento',
+        campo,
+        pesquisa
+      }
+    }).done((data) => {
+      let response = JSON.parse(data);
+      let html = ``;
+      $.each(response, (index, cg) => {
+        html +=
+          `<tr>
+            <th scope="row">${cg.cd_conta_gerencial}</th>
+            <td>${cg.ds_classificacao}</td>
+            <td>${cg.ds_conta_gerencial}</td>
+            <td class="text-center">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input checkbox-conta" id="cg-${cg.cd_conta_gerencial}" onchange="adicionarRemoverConta(this, ${cg.cd_conta_gerencial})">
+                <label class="custom-control-label" for="cg-${cg.cd_conta_gerencial}"></label>
+              </div>
+            </td>
+          </tr>`;
+      });
+      $('#resultListaContasGerenciais').html(html);
+    });
+  }
+
+  const abreModalContasGerenciais = () => {
+    let centroCusto = $('#numCentroCusto').val();
+    if (centroCusto == '') {
+      alert('Selecione um centro de custo primeiro!');
+      return;
+    }
+    $('#modalContasGerenciais').modal('show');
+    listarContasGerenciaisModal();
   }
 
   const abreModalCentroCustos = () => {

@@ -249,6 +249,7 @@ require_once 'templates/scripts.php';
   }
 
   const salvarContasGerenciaisUsuario = () => {
+    let centroCusto = $('#numCentroCusto').val();
     if (contas.length == 0) {
       alert('Selecione pelo menos uma conta gerencial!');
       return;
@@ -259,7 +260,8 @@ require_once 'templates/scripts.php';
         type: 'post',
         data: {
           action: 'adicionarContasUsuario',
-          contas
+          contas,
+          centroCusto
         }
       }).done(() => {
         $('#modalContasGerenciais').modal('hide');
@@ -385,13 +387,11 @@ require_once 'templates/scripts.php';
   }
 
   const listarContasGerenciaisModal = (dados = null) => {
-    let idCentroCusto = $('#numCentroCusto').val();
     $.ajax({
       url: '../controller/centroCusto.php',
       type: 'post',
       data: (dados != null) ? dados : {
-        action: 'listarContasGerenciais',
-        idCentroCusto
+        action: 'listarContasGerenciais'
       }
     }).done((data) => {
       let response = JSON.parse(data);

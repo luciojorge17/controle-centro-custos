@@ -20,7 +20,8 @@ include_once '../model/orcamentoModel.php';
       </div>
     </div>
   </div>
-  <div class="container padding-sm">
+  <form class="container padding-sm" id="frm-copiar-orcamento" action="#">
+    <input type="hidden" name="action" value="copiarOrcamento">
     <div class="row align-items-end mt-3">
       <div class="col-12 col-md-2 col-lg-2">
         <label for="slcAnoPara">Orçamento para</label>
@@ -66,7 +67,7 @@ include_once '../model/orcamentoModel.php';
         <button class="btn btn-secondary btn-sm btn-block">Copiar</button>
       </div>
     </div>
-  </div>
+  </form>
 </section>
 
 <?php
@@ -80,6 +81,32 @@ require_once 'templates/scripts.php';
       $('.esconde-reajuste').show();
     } else {
       $('.esconde-reajuste').hide();
+    }
+  });
+
+  $('#frm-copiar-orcamento').on('submit', (e) => {
+    e.preventDefault();
+    let anoDe = $('#slcAnoDe').val(),
+      anoPara = $('#slcAnoPara').val();
+    if (anoDe == anoPara) {
+      alert('Selecione um ano diferente para cópia!');
+      return;
+    }
+    if (window.confirm(`Deseja mesmo copiar o orçamento de ${anoDe} para ${anoPara}?`)) {
+      let form = new FormData($('#frm-copiar-orcamento')[0]);
+      $.ajax({
+        url: '../controller/orcamento.php',
+        type: 'post',
+        data: form,
+        processData: false,
+        contentType: false,
+        cache: false
+      }).done((dados) => {
+        alert('Orçamento copiado com sucesso');
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      });
     }
   });
 </script>
