@@ -249,7 +249,8 @@ require_once 'templates/scripts.php';
   }
 
   const salvarContasGerenciaisUsuario = () => {
-    let centroCusto = $('#numCentroCusto').val();
+    let centroCusto = $('#numCentroCusto').val(),
+      usuario = $('#numUsuario').val();
     if (contas.length == 0) {
       alert('Selecione pelo menos uma conta gerencial!');
       return;
@@ -261,7 +262,8 @@ require_once 'templates/scripts.php';
         data: {
           action: 'adicionarContasUsuario',
           contas,
-          centroCusto
+          centroCusto,
+          usuario
         }
       }).done(() => {
         $('#modalContasGerenciais').modal('hide');
@@ -310,6 +312,66 @@ require_once 'templates/scripts.php';
     let dados = $('#frmBuscaContasGerenciais').serialize();
     listarContasGerenciaisModal(dados);
   });
+
+  $('#numUsuario').on('change', () => {
+    let id = $('#numUsuario').val();
+    if (id != '') {
+      $.ajax({
+        url: '../controller/usuarios.php',
+        type: 'post',
+        data: {
+          action: 'getUsuarioById',
+          id
+        }
+      }).done((data) => {
+        let response = JSON.parse(data);
+        if (response.status == 1) {
+          selecionaUsuario(response.cd_codusuario, response.ds_usuario);
+        } else {
+          limpaUsuario();
+          alert('Usuário não encontrado!');
+        }
+      });
+    } else {
+      limpaUsuario();
+    }
+  });
+
+  $('#numCentroCusto').on('change', () => {
+    let id = $('#numCentroCusto').val();
+    if (id != '') {
+      $.ajax({
+        url: '../controller/centroCusto.php',
+        type: 'post',
+        data: {
+          action: 'getCentroCustoById',
+          id
+        }
+      }).done((data) => {
+        let response = JSON.parse(data);
+        if (response.status == 1) {
+          selecionaCentroCusto(response.cd_centro_custo, response.ds_centro_custo);
+        } else {
+          limpaCentroCusto();
+          alert('Centro de custo não encontrado!');
+        }
+      });
+    } else {
+      limpaCentroCusto();
+    }
+  });
+
+  const limpaUsuario = () => {
+    $('#numUsuario').val("");
+    $('#txtNomeUsuario').val("");
+    $('#resultGridContasGerenciais').empty();
+  }
+
+  const limpaCentroCusto = () => {
+    $('#numCentroCusto').val("");
+    $('#txtNomeCentroCusto').val("");
+    $('#resultGridContasGerenciais').empty();
+  }
 
   const listarUsuarios = (dados = null) => {
     $.ajax({

@@ -202,3 +202,70 @@ function getContasGerenciaisCentroCustoOrcamentoAnual($condicao = null)
   }
   return $contasGerenciais;
 }
+
+function getCentroCustoById($id)
+{
+  require '../../config/database.php';
+  $where = 'WHERE X_ATIVO = 1 AND CD_CENTRO_CUSTO = ' . $id;
+  $sql = "SELECT CD_CENTRO_CUSTO, DS_CENTRO_CUSTO FROM TBL_CUSTOS_CENTRO_CUSTOS $where ORDER BY CD_CENTRO_CUSTO ASC";
+  $consulta = odbc_exec($conexao, $sql);
+  $dados = [];
+  $centroCusto = odbc_fetch_object($consulta);
+  if (!empty($centroCusto)) {
+    $dados['status'] = 1;
+    $dados['cd_centro_custo'] = $centroCusto->CD_CENTRO_CUSTO;
+    $dados['ds_centro_custo'] = utf8_encode($centroCusto->DS_CENTRO_CUSTO);
+  } else {
+    $dados['status'] = 0;
+  }
+  return $dados;
+}
+
+function getCentroCustoOrcamentoAnualById($id, $ano)
+{
+  require '../../config/database.php';
+  $where = "WHERE TCCC.X_ATIVO = 1 AND NNOA.DT_ANO = '$ano' AND NNOA.CD_CENTRO_CUSTO = " . $id;
+  $sql =
+    "SELECT NNOA.CD_CENTRO_CUSTO, TCCC.DS_CENTRO_CUSTO, TCCC.DS_CLASSIFICACAO, TCCC.X_TIPO 
+	    FROM TBL_NEWNORTE_ORCAMENTO_ANUAL NNOA 
+		    INNER JOIN TBL_CUSTOS_CENTRO_CUSTOS TCCC ON NNOA.CD_CENTRO_CUSTO = TCCC.CD_CENTRO_CUSTO
+			    $where 
+            GROUP BY NNOA.CD_CENTRO_CUSTO,  TCCC.DS_CENTRO_CUSTO, TCCC.DS_CLASSIFICACAO, TCCC.X_TIPO";
+  $consulta = odbc_exec($conexao, $sql);
+  $dados = [];
+  $centroCusto = odbc_fetch_object($consulta);
+  if (!empty($centroCusto)) {
+    $dados['status'] = 1;
+    $dados['cd_centro_custo'] = $centroCusto->CD_CENTRO_CUSTO;
+    $dados['ds_centro_custo'] = utf8_encode($centroCusto->DS_CENTRO_CUSTO);
+  } else {
+    $dados['status'] = 0;
+  }
+  return $dados;
+}
+
+function getContaGerencialOrcamentoAnualById($condicao, $campoMes)
+{
+  require '../../config/database.php';
+  $where = (!empty($condicao)) ? 'WHERE ' . $condicao : '';
+  $sql =
+    "SELECT NNOA.CD_CONTA_GERENCIAL, TCCG.DS_CONTA_GERENCIAL, TCCG.DS_CLASSIFICACAO, TCCG.X_TIPO, NNOA.$campoMes
+      FROM TBL_NEWNORTE_ORCAMENTO_ANUAL NNOA 
+        INNER JOIN TBL_CONTABIL_PLANO_CONTAS_GERENCIAL TCCG ON NNOA.CD_CONTA_GERENCIAL = TCCG.CD_CONTA_GERENCIAL
+          $where
+            GROUP BY NNOA.CD_CONTA_GERENCIAL,  TCCG.DS_CONTA_GERENCIAL, TCCG.DS_CLASSIFICACAO, TCCG.X_TIPO, $campoMes";
+  $consulta = odbc_exec($conexao, $sql);
+  $dados = [];
+  $contaGerencial = odbc_fetch_object($consulta);
+  if (!empty($contaGerencial)) {
+    $dados['status'] = 1;
+    $dados['cd_conta_gerencial'] = $contaGerencial->CD_CONTA_GERENCIAL;
+    $dados['ds_classificacao'] = $contaGerencial->DS_CLASSIFICACAO;
+    $dados['x_tipo'] = $contaGerencial->X_TIPO;
+    $dados['ds_conta_gerencial'] = utf8_encode($contaGerencial->DS_CONTA_GERENCIAL);
+    $dados['valor_atual'] = number_format($contaGerencial->$campoMes, 2, ',', '.');
+  } else {
+    $dados['status'] = 0;
+  }
+  return $dados;
+}

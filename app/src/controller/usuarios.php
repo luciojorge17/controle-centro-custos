@@ -14,4 +14,15 @@ switch ($action) {
     $queryUsuarios = getUsuarios($condicao);
     echo json_encode($queryUsuarios);
     break;
+  case 'getUsuarioById':
+    $id = $_POST['id'];
+    $usuario = getUsuarioById($id);
+    if (!empty($usuario)) {
+      echo json_encode($usuario);
+      exit;
+    } else {
+      json_encode(['status' => 0]);
+      exit;
+    }
+    break;
 }

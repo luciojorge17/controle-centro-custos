@@ -55,12 +55,13 @@ switch ($action) {
   case 'adicionarContasUsuario':
     $dados = [];
     $idCentroCusto = $_POST['centroCusto'];
+    $idUsuario = $_POST['usuario'];
     $filial = ($_SESSION['filial'] == 0) ? 1 : $_SESSION['filial'];
     $empresa = ($_SESSION['filial'] == 0) ? 1 : getIdEmpresa($_SESSION['filial']);
     foreach ($_POST['contas'] as $conta) {
-      $dados[0] = '0';
-      $dados[1] = '0';
-      $dados[2] = $_SESSION['idUsuario'];
+      $dados[0] = $_SESSION['idUsuario'];
+      $dados[1] = $_SESSION['idUsuario'];
+      $dados[2] = $idUsuario;
       $dados[3] = $empresa;
       $dados[4] = $filial;
       $dados[5] = date('Y-m-d H:i:s') . '.000';
@@ -216,6 +217,83 @@ switch ($action) {
     }
     $queryContasGerenciais = getContasGerenciais($condicao);
     echo json_encode($queryContasGerenciais);
+    break;
+  case 'getCentroCustoById':
+    $id = $_POST['id'];
+    $centroCusto = getCentroCustoById($id);
+    if (!empty($centroCusto)) {
+      echo json_encode($centroCusto);
+      exit;
+    } else {
+      json_encode(['status' => 0]);
+      exit;
+    }
+    break;
+  case 'getCentroCustoOrcamentoAnualById':
+    $id = $_POST['id'];
+    $ano = $_POST['ano'];
+    $centroCusto = getCentroCustoOrcamentoAnualById($id, $ano);
+    if (!empty($centroCusto)) {
+      echo json_encode($centroCusto);
+      exit;
+    } else {
+      json_encode(['status' => 0]);
+      exit;
+    }
+    break;
+  case 'getContaGerencialOrcamentoAnualById':
+    $mes = $_POST['mes'];
+    $ano = $_POST['ano'];
+    $centroCusto = $_POST['cdCentroCusto'];
+    $id = $_POST['id'];
+    $colunaMes = '';
+    switch ($mes) {
+      case 1:
+        $colunaMes = 'VL_MES_JAN';
+        break;
+      case 2:
+        $colunaMes = 'VL_MES_FEV';
+        break;
+      case 3:
+        $colunaMes = 'VL_MES_MAR';
+        break;
+      case 4:
+        $colunaMes = 'VL_MES_ABR';
+        break;
+      case 5:
+        $colunaMes = 'VL_MES_MAI';
+        break;
+      case 6:
+        $colunaMes = 'VL_MES_JUN';
+        break;
+      case 7:
+        $colunaMes = 'VL_MES_JUL';
+        break;
+      case 8:
+        $colunaMes = 'VL_MES_AGO';
+        break;
+      case 9:
+        $colunaMes = 'VL_MES_SET';
+        break;
+      case 10:
+        $colunaMes = 'VL_MES_OUT';
+        break;
+      case 11:
+        $colunaMes = 'VL_MES_NOV';
+        break;
+      case 12:
+        $colunaMes = 'VL_MES_DEZ';
+        break;
+    }
+    $condicao = "NNOA.DT_ANO = '$ano' AND NNOA.CD_CENTRO_CUSTO = $centroCusto AND NNOA.CD_CONTA_GERENCIAL = $id";
+    $contaGerencial = getContaGerencialOrcamentoAnualById($condicao, $colunaMes);
+    if (!empty($contaGerencial)) {
+      echo json_encode($contaGerencial);
+      exit;
+    } else {
+      json_encode(['status' => 0]);
+      exit;
+    }
     break;
 }
 

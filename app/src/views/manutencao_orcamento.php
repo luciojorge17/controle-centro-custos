@@ -92,7 +92,7 @@ include_once '../model/orcamentoModel.php';
         <div class="col-12 col-md-2 col-lg-1 text-right">
           <label for="txtValorAtualSaida">Valor Atual</label>
         </div>
-        <div class="col-12 col-md-2 col-lg-2">
+        <div class="col-12 col-md-2 col-lg-2 pr-15">
           <input readonly type="text" name="txtValorAtualSaida" id="txtValorAtualSaida" class="form-control form-control-sm">
         </div>
       </div>
@@ -129,7 +129,7 @@ include_once '../model/orcamentoModel.php';
         <div class="col-12 col-md-2 col-lg-1 text-right">
           <label for="txtValorAtualEntrada">Valor Atual</label>
         </div>
-        <div class="col-12 col-md-2 col-lg-2">
+        <div class="col-12 col-md-2 col-lg-2 pr-15">
           <input readonly type="text" name="txtValorAtualEntrada" id="txtValorAtualEntrada" class="form-control form-control-sm">
         </div>
       </div>
@@ -145,7 +145,7 @@ include_once '../model/orcamentoModel.php';
         <div class="col-12 col-md-2 col-lg-2">
           <label for="txtJustificativa">Justificativa</label>
         </div>
-        <div class="col-12 col-md-2 col-lg-10">
+        <div class="col-12 col-md-2 col-lg-10 pr-15">
           <textarea name="txtJustificativa" id="txtJustificativa" rows="2" class="form-control form-control-sm" required></textarea>
         </div>
       </div>
@@ -372,6 +372,111 @@ require_once 'templates/scripts.php';
       });
       $('#resultListaContasGerenciais').html(html);
     });
+  }
+
+  $('#numCentroCustoEntrada').on('change', () => {
+    buscaCentroCustoById(2);
+  });
+  $('#numContaGerencialEntrada').on('change', () => {
+    buscaContaGerencialById(2);
+  });
+
+  $('#numCentroCustoSaida').on('change', () => {
+    buscaCentroCustoById(1);
+  });
+  $('#numContaGerencialSaida').on('change', () => {
+    buscaContaGerencialById(1);
+  });
+
+  const buscaCentroCustoById = (tipo) => {
+    let id = (tipo == 2) ? $('#numCentroCustoEntrada').val() : $('#numCentroCustoSaida').val(),
+      ano = $('#slcAno').val();
+    if (id != '') {
+      $.ajax({
+        url: '../controller/centroCusto.php',
+        type: 'post',
+        data: {
+          action: 'getCentroCustoOrcamentoAnualById',
+          id,
+          ano
+        }
+      }).done((data) => {
+        let response = JSON.parse(data);
+        if (response.status == 1) {
+          selecionaCentroCusto(response.cd_centro_custo, response.ds_centro_custo, tipo);
+        } else {
+          limpaCentroCusto(tipo);
+          alert('Centro de custo não encontrado!');
+        }
+      });
+    } else {
+      limpaCentroCusto(tipo);
+    }
+  }
+
+  const buscaContaGerencialById = (tipo) => {
+    let id = '',
+      palavra = '',
+      cdCentroCusto = '',
+      mes = $('#slcMes').val(),
+      ano = $('#slcAno').val();
+    if (tipo == 1) {
+      id = $('#numContaGerencialSaida').val();
+      palavra = 'saída';
+      cdCentroCusto = $('#numCentroCustoSaida').val();
+    } else {
+      id = $('#numContaGerencialEntrada').val();
+      palavra = 'entrada';
+      cdCentroCusto = $('#numCentroCustoEntrada').val();
+    }
+    if (cdCentroCusto == '' || cdCentroCusto == undefined || cdCentroCusto == null) {
+      alert(`Selecione um centro de custo de ${palavra} primeiro!`);
+      return;
+    }
+    if (id != '') {
+      $.ajax({
+        url: '../controller/centroCusto.php',
+        type: 'post',
+        data: {
+          action: 'getContaGerencialOrcamentoAnualById',
+          id,
+          ano,
+          mes,
+          cdCentroCusto
+        }
+      }).done((data) => {
+        let response = JSON.parse(data);
+        if (response.status == 1) {
+          selecionaContaGerencial(response.cd_conta_gerencial, response.ds_conta_gerencial, response.valor_atual, tipo);
+        } else {
+          limpaContaGerencial(tipo);
+          alert('Conta gerencial não encontrada!');
+        }
+      });
+    } else {
+      limpaContaGerencial(tipo);
+    }
+  }
+
+  const limpaCentroCusto = (tipo) => {
+    if (tipo == 2) {
+      $('#numCentroCustoEntrada').val("");
+      $('#txtNomeCentroCustoEntrada').val("");
+    } else {
+      $('#numCentroCustoSaida').val("");
+      $('#txtNomeCentroCustoSaida').val("");
+    }
+  }
+  const limpaContaGerencial = (tipo) => {
+    if (tipo == 2) {
+      $('#numContaGerencialEntrada').val("");
+      $('#txtNomeContaGerencialEntrada').val("");
+      $('#txtValorAtualEntrada').val("");
+    } else {
+      $('#numContaGerencialSaida').val("");
+      $('#txtNomeContaGerencialSaida').val("");
+      $('#txtValorAtualSaida').val("");
+    }
   }
 
   $('#frmBuscaCentroCusto').on('submit', (e) => {

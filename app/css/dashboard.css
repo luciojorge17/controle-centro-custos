@@ -103,4 +103,8 @@ main #tbody-orcamento {
   padding: 0;
   padding-left: 2px;
 }
+
+.pr-15 {
+  padding-right: 15px !important;
+}
 /*# sourceMappingURL=dashboard.css.map */

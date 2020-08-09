@@ -48,7 +48,7 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
         <input type="number" name="numCentroCusto" id="numCentroCusto" class="form-control form-control-sm">
       </div>
       <div class="col-12 col-md-2 col-lg-1">
-        <button class="btn btn-secondary btn-sm btn-block" data-toggle="modal" onclick="abreModalCentroCustos()">...</button>
+        <button class="btn btn-secondary btn-sm btn-block" data-toggle="modal" data-target="#modalCentroCustos">...</button>
       </div>
       <div class="col-12 col-md-6 col-lg-5">
         <input readonly type="text" name="txtNomeCentroCusto" id="txtNomeCentroCusto" class="form-control form-control-sm">
@@ -191,6 +191,10 @@ require_once 'templates/scripts.php';
 ?>
 
 <script>
+  window.onload = () => {
+    listarCentroCustos();
+  }
+
   const selecionaCentroCusto = (id, descricao) => {
     $('#numCentroCusto').val(id);
     $('#txtNomeCentroCusto').val(descricao);
@@ -250,6 +254,37 @@ require_once 'templates/scripts.php';
     listarContasGerenciaisModal();
   });
 
+  $('#numCentroCusto').on('change', () => {
+    let id = $('#numCentroCusto').val();
+    if (id != '') {
+      $.ajax({
+        url: '../controller/centroCusto.php',
+        type: 'post',
+        data: {
+          action: 'getCentroCustoById',
+          id
+        }
+      }).done((data) => {
+        let response = JSON.parse(data);
+        if (response.status == 1) {
+          selecionaCentroCusto(response.cd_centro_custo, response.ds_centro_custo);
+        } else {
+          limpaCentroCusto();
+          alert('Centro de custo não encontrado!');
+        }
+      });
+    } else {
+      limpaCentroCusto();
+    }
+  });
+
+  const limpaCentroCusto = () => {
+    $('#numCentroCusto').val("");
+    $('#txtNomeCentroCusto').val("");
+    $('#tbody-orcamento').empty();
+  }
+
+
   const listarContasGerenciaisModal = () => {
     let campo = $('#slcContaGerencialCampo').val(),
       pesquisa = $('#txtContaGerencialTexto').val();
@@ -292,21 +327,14 @@ require_once 'templates/scripts.php';
     listarContasGerenciaisModal();
   }
 
-  const abreModalCentroCustos = () => {
-    let ano = $('#slcAno').val(),
-      campo = $('#slcCentroCustoCampo').val(),
-      pesquisa = $('#txtCentroCustoTexto').val();
+  const listarCentroCustos = (dados = null) => {
     $.ajax({
       url: '../controller/centroCusto.php',
       type: 'post',
-      data: {
-        action: 'listarCentroCustosOrcamentoAnual',
-        ano,
-        campo,
-        pesquisa
+      data: (dados != null) ? dados : {
+        action: 'buscarCentroCustos'
       }
     }).done((data) => {
-      $('#modalCentroCustos').modal('show');
       let response = JSON.parse(data);
       let html = ``;
       $.each(response, (index, centroCusto) => {
@@ -324,7 +352,8 @@ require_once 'templates/scripts.php';
 
   $('#frmBuscaCentroCusto').on('submit', (e) => {
     e.preventDefault();
-    abreModalCentroCustos();
+    let dados = $('#frmBuscaCentroCusto').serialize();
+    listarCentroCustos(dados);
   });
 
   const getContasGerenciaisCentroCustoAnual = (cdCentroCusto) => {
