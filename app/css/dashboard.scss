@@ -101,3 +101,14 @@ main{
 .pr-15{
   padding-right: 15px !important;
 }
+
+#accordion .card-body{
+  padding: 0 !important;
+}
+
+.btn-accordion{
+  color: #000 !important;
+  font-weight: 700;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
