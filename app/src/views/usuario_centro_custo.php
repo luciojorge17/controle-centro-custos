@@ -64,6 +64,7 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
                 <th scope="col">Classificação</th>
                 <th scope="col">Centro de Custo</th>
                 <th scope="col">Conta Gerencial</th>
+                <th scope="col" class="text-center">Ações</th>
               </tr>
             </thead>
             <tbody id="resultGridContasGerenciais">
@@ -441,9 +442,29 @@ require_once 'templates/scripts.php';
             <td>${cg.ds_classificacao}</td>
             <td>${cg.ds_centro_custo}</td>
             <td>${cg.ds_conta_gerencial}</td>
+            <td class="text-center">
+              <button class="btn btn-small btn-secondary" onclick="excluirContaGerencialUsuario(${idUsuario}, ${idCentroCusto}, ${cg.cd_conta_gerencial}, '${cg.ds_conta_gerencial}')">Excluir</button>
+            </td>
           </tr>`;
         });
         $('#resultGridContasGerenciais').html(html);
+      });
+    }
+  }
+
+  const excluirContaGerencialUsuario = (usuario, centroCusto, contaGerencial, descricaoContaGerencial) => {
+    if (window.confirm(`Confirma remover '${descricaoContaGerencial}' para este usuário?`)) {
+      $.ajax({
+        url: '../controller/centroCusto.php',
+        type: 'post',
+        data: {
+          action: 'excluirContaGerencialUsuario',
+          usuario,
+          centroCusto,
+          contaGerencial
+        }
+      }).done(() => {
+        listarContasGerenciaisGrid();
       });
     }
   }

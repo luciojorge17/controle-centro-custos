@@ -295,6 +295,17 @@ switch ($action) {
       exit;
     }
     break;
+  case 'excluirContaGerencialUsuario':
+    $filial = $_SESSION['filial'];
+    $centroCusto = $_POST['centroCusto'];
+    $usuario = $_POST['usuario'];
+    $contaGerencial = $_POST['contaGerencial'];
+    $condicao = "CD_CODUSUARIO = $usuario AND CD_CENTRO_CUSTO = $centroCusto AND CD_CONTA_GERENCIAL = $contaGerencial";
+    if ($filial > 0) {
+      $condicao .= " AND CD_FILIAL = $filial";
+    }
+    deleteNewnorteUsuarioCentroCusto($condicao);
+    break;
 }
 
 function formataNumero($n)

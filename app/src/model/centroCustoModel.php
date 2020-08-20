@@ -244,6 +244,15 @@ function getCentroCustoOrcamentoAnualById($id, $ano)
   return $dados;
 }
 
+function deleteNewnorteUsuarioCentroCusto($condicao)
+{
+  require '../../config/database.php';
+  $where = (!empty($condicao)) ? 'WHERE ' . $condicao : '';
+  $sql = "DELETE FROM TBL_NEWNORTE_CENTRO_CUSTO_USUARIO $where";
+  odbc_exec($conexao, $sql);
+  return true;
+}
+
 function getContaGerencialOrcamentoAnualById($condicao, $campoMes)
 {
   require '../../config/database.php';

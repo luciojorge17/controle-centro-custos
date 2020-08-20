@@ -119,4 +119,9 @@ main #tbody-orcamento {
   -webkit-box-shadow: none !important;
           box-shadow: none !important;
 }
+
+.btn-small {
+  font-size: 11px;
+  padding: 2px 4px;
+}
 /*# sourceMappingURL=dashboard.css.map */
