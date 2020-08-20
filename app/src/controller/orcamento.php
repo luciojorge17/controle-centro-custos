@@ -203,8 +203,8 @@ switch ($action) {
       $dados[1] = $_SESSION['idUsuario'];
       $dados[2] = $copiar['cd_empresa'];
       $dados[3] = $copiar['cd_filial'];
-      $dados[4] = date('Y-m-d H:i:s') . '.000';
-      $dados[5] = date('Y-m-d H:i:s') . '.000';
+      $dados[4] = date('Y-d-m H:i:s') . '.000';
+      $dados[5] = date('Y-d-m H:i:s') . '.000';
       $dados[6] = $anoPara;
       $dados[7] = $vl_total_ano;
       $dados[8] = $vl_mes_jan;

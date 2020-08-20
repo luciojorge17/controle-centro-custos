@@ -37,7 +37,7 @@ switch ($action) {
     $ordens = $_POST['ordens'];
     $idUsuario = $_SESSION['idUsuario'];
     foreach ($ordens as $ordem) {
-      $data = date('Y-m-d H:i:s') . '.000';
+      $data = date('Y-d-m H:i:s') . '.000';
       reprovaOrdem($ordem, $idUsuario, $data);
     }
     break;

@@ -64,8 +64,8 @@ switch ($action) {
       $dados[2] = $idUsuario;
       $dados[3] = $empresa;
       $dados[4] = $filial;
-      $dados[5] = date('Y-m-d H:i:s') . '.000';
-      $dados[6] = date('Y-m-d H:i:s') . '.000';
+      $dados[5] = date('Y-d-m H:i:s') . '.000';
+      $dados[6] = date('Y-d-m H:i:s') . '.000';
       $dados[7] = $idCentroCusto;
       $dados[8] = $conta;
       insertUsuarioConta($dados);
@@ -82,8 +82,8 @@ switch ($action) {
       $dados[1] = $_SESSION['idUsuario'];
       $dados[2] = $empresa;
       $dados[3] = $filial;
-      $dados[4] = date('Y-m-d H:i:s') . '.000';
-      $dados[5] = date('Y-m-d H:i:s') . '.000';
+      $dados[4] = date('Y-d-m H:i:s') . '.000';
+      $dados[5] = date('Y-d-m H:i:s') . '.000';
       $dados[6] = $ano;
       $dados[7] = '0.00';
       $dados[8] = '0.00';
@@ -180,7 +180,7 @@ switch ($action) {
     break;
   case 'updateOrcamentoAnual':
     $usuarioAt = $_SESSION['idUsuario'];
-    $data = date('Y-m-d H:i:s') . '.000';
+    $data = date('Y-d-m H:i:s') . '.000';
     foreach (json_decode($_POST['update']) as $linha) {
       $condicao = "CD_ID = $linha[0]";
       $vl_jan = formataNumero($linha[1]) / 100;
