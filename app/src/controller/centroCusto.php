@@ -306,6 +306,11 @@ switch ($action) {
     }
     deleteNewnorteUsuarioCentroCusto($condicao);
     break;
+  case 'excluirOrcamentoAtual':
+    $id = $_POST['id'];
+    $condicao = "CD_ID = $id";
+    deleteNewnorteOrcamento($condicao);
+    break;
 }
 
 function formataNumero($n)

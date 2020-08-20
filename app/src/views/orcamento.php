@@ -75,6 +75,7 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
                   echo '<th scope="col">' . $mes["abreviatura"] . '</th>';
                 }
                 ?>
+                <th scope="col" class="text-center">Ações</th>
               </tr>
             </thead>
             <tbody id="tbody-orcamento">
@@ -388,11 +389,29 @@ require_once 'templates/scripts.php';
             <td><input type="text" class="form-control form-control-sm maskValor" id="vl-set-linha-${cg.item}" value="${cg.vl_mes_set}"></td>
             <td><input type="text" class="form-control form-control-sm maskValor" id="vl-out-linha-${cg.item}" value="${cg.vl_mes_out}"></td>
             <td><input type="text" class="form-control form-control-sm maskValor" id="vl-nov-linha-${cg.item}" value="${cg.vl_mes_nov}"></td>
-            <td><input type="text" class="form-control form-control-sm maskValor" id="vl-dez-linha-${cg.item}" value="${cg.vl_mes_dez}"></td> 
+            <td><input type="text" class="form-control form-control-sm maskValor" id="vl-dez-linha-${cg.item}" value="${cg.vl_mes_dez}"></td>
+            <td class="text-center">
+              <button class="btn btn-small btn-secondary" onclick="excluirOrcamentoAtual(${cg.cd_id}, '${cg.ds_conta_gerencial}', ${cdCentroCusto})">Excluir</button>
+            </td> 
           </tr>`;
       });
       $('#tbody-orcamento').html(html);
     });
+  }
+
+  const excluirOrcamentoAtual = (id, contaGerencial, cdCentroCusto) => {
+    if (window.confirm(`Confirma remover '${contaGerencial}' deste orçamento?`)) {
+      $.ajax({
+        url: '../controller/centroCusto.php',
+        type: 'post',
+        data: {
+          action: 'excluirOrcamentoAtual',
+          id
+        }
+      }).done(() => {
+        getContasGerenciaisCentroCustoAnual(cdCentroCusto);
+      });
+    }
   }
 
   const divideValorMes = (linha, valor) => {
