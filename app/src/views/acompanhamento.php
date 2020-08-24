@@ -97,47 +97,56 @@ require_once 'templates/scripts.php';
       beforeSend: () => $('#result').html(animation)
     }).done((data) => {
       let response = JSON.parse(data);
-      let html =
-        `<div class="col-12 text-center mt-3 mb-1">
+      let html = '';
+      if (response != '') {
+        html =
+          `<div class="col-12 text-center mt-3 mb-1">
           <h4>Contas Gerenciais</h4>
         </div>`;
-      $.each(response, (index, dados) => {
-        html +=
-          `<div class="col-12 col-md-4"><div id="gauge-${dados.cd_conta_gerencial}"></div></div>`;
-      });
-      $('#result').html(html);
-      $.each(response, (index, dados) => {
-        let valor = dados.limite.replace('.', '');
-        valor = valor.replace(',', '.');
-        let utilizado = dados.utilizado.replace('.', '');
-        utilizado = utilizado.replace(',', '.');
-        let percentual = (utilizado * 100) / valor;
-        new JustGage({
-          id: `gauge-${dados.cd_conta_gerencial}`,
-          decimal: 2,
-          value: utilizado,
-          min: 0,
-          max: parseFloat(valor).toFixed(2),
-          title: dados.ds_conta_gerencial,
-          label: `${percentual.toFixed(2)} %`,
-          pointer: true,
-          gaugeWidthScale: 1,
-          formatNumber: true,
-          pointerOptions: {
-            toplength: 5,
-            bottomlength: 5,
-            bottomwidth: 4,
-            color: '#000'
-          },
-          levelColors: [
-            "#01DFA5",
-          ],
-          gaugeColor: "#e6e6e6",
-          titleFontColor: "#000",
-          valueFontColor: "#000",
-          labelFontColor: "#000"
+        $.each(response, (index, dados) => {
+          html +=
+            `<div class="col-12 col-md-4"><div id="gauge-${dados.cd_conta_gerencial}"></div></div>`;
         });
-      });
+        $('#result').html(html);
+        $.each(response, (index, dados) => {
+          let valor = dados.limite.replace('.', '');
+          valor = valor.replace(',', '.');
+          let utilizado = dados.utilizado.replace('.', '');
+          utilizado = utilizado.replace(',', '.');
+          let percentual = (utilizado * 100) / valor;
+          new JustGage({
+            id: `gauge-${dados.cd_conta_gerencial}`,
+            decimal: 2,
+            value: utilizado,
+            min: 0,
+            max: parseFloat(valor).toFixed(2),
+            title: dados.ds_conta_gerencial,
+            label: `${percentual.toFixed(2)} %`,
+            pointer: true,
+            gaugeWidthScale: 1,
+            formatNumber: true,
+            pointerOptions: {
+              toplength: 5,
+              bottomlength: 5,
+              bottomwidth: 4,
+              color: '#000'
+            },
+            levelColors: [
+              "#01DFA5",
+            ],
+            gaugeColor: "#e6e6e6",
+            titleFontColor: "#000",
+            valueFontColor: "#000",
+            labelFontColor: "#000"
+          });
+        });
+      } else {
+        html =
+          `<div class="col-12 text-center mt-3 mb-1">
+            Nenhum resultado encontrado
+          </div>`;
+        $('#result').html(html);
+      }
     });
   }
 
@@ -168,11 +177,13 @@ require_once 'templates/scripts.php';
       beforeSend: () => $('#result').html(animation)
     }).done((data) => {
       let response = JSON.parse(data);
-      let html = `<div class="col-12 mb-3"><div class="accordion" id="accordion">`;
-      let contador = 1;
-      $.each(response, (index, dados) => {
-        html +=
-          `<div class="card">
+      let html = '';
+      if (response != '') {
+        html = `<div class="col-12 mb-3"><div class="accordion" id="accordion">`;
+        let contador = 1;
+        $.each(response, (index, dados) => {
+          html +=
+            `<div class="card">
             <div class="card-header" id="accordion-${contador}">
               <h2 class="mb-0">
                 <button class="btn btn-link btn-block text-left btn-accordion" type="button" data-toggle="collapse" data-target="#collapse-${contador}" aria-expanded="true" aria-controls="collapse-${contador}">
@@ -191,20 +202,20 @@ require_once 'templates/scripts.php';
                       </tr>
                     </thead>
                     <tbody>`;
-        let valorTotal = 0;
-        $.each(dados, (index, linha) => {
-          let valorLinha = linha.valor.replace('.', '');
-          valorLinha = valorLinha.replace(',', '.');
-          valorTotal = parseFloat(valorTotal) + parseFloat(valorLinha);
-          html +=
-            `<tr>
+          let valorTotal = 0;
+          $.each(dados, (index, linha) => {
+            let valorLinha = linha.valor.replace('.', '');
+            valorLinha = valorLinha.replace(',', '.');
+            valorTotal = parseFloat(valorTotal) + parseFloat(valorLinha);
+            html +=
+              `<tr>
             <th scope="row">${linha.cd_ordem_compra}</th>
             <td>${linha.ds_fornecedor}</td>
             <td class="text-right">${linha.valor}</td>
           </tr>`;
-        });
-        html +=
-          `       </tbody>
+          });
+          html +=
+            `       </tbody>
                 </table>
               <div class="col-12 text-right mb-3">
                 Total: R$ ${numberToReal(valorTotal)}
@@ -212,10 +223,17 @@ require_once 'templates/scripts.php';
             </div>
           </div>
           </div>`;
-        contador++;
-      })
-      html += `</div>`;
-      $('#result').html(html);
+          contador++;
+        })
+        html += `</div>`;
+        $('#result').html(html);
+      } else {
+        html =
+          `<div class="col-12 text-center mt-3 mb-1">
+            Nenhum resultado encontrado
+          </div>`;
+        $('#result').html(html);
+      }
     });
   }
 
