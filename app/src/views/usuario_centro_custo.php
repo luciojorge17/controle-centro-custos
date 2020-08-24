@@ -277,6 +277,7 @@ require_once 'templates/scripts.php';
     if ($('#numUsuario').val() != '' && $('#numCentroCusto').val() != '') {
       $('#modalContasGerenciais').modal('show');
       listarContasGerenciaisModal();
+      limparSelecaoContas();
     } else {
       alert('Selecione um usuário e um centro de custo primeiro!');
     }

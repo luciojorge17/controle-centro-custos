@@ -217,7 +217,6 @@ require_once 'templates/scripts.php';
   }
 
   const selecionarTodasAsContas = () => {
-    limparSelecaoContas();
     $('.checkbox-conta').prop('checked', true);
     let elementos = $('.checkbox-conta');
     $.each(elementos, (index, el) => {
@@ -246,6 +245,7 @@ require_once 'templates/scripts.php';
       }).done(() => {
         $('#modalContasGerenciais').modal('hide');
         getContasGerenciaisCentroCustoAnual($('#numCentroCusto').val());
+        limparSelecaoContas();
       });
     }
   }
@@ -326,6 +326,7 @@ require_once 'templates/scripts.php';
     }
     $('#modalContasGerenciais').modal('show');
     listarContasGerenciaisModal();
+    limparSelecaoContas();
   }
 
   const listarCentroCustos = (dados = null) => {
