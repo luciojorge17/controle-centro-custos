@@ -176,6 +176,8 @@ if (!isAdministrador($_SESSION['idUsuario'])) {
       <div class="modal-body">
         <form id="frmBuscaContasGerenciais" class="row">
           <input type="hidden" name="action" value="listarContasGerenciais">
+          <input type="hidden" name="hdIdCentroCusto">
+          <input type="hidden" name="hdIdUsuario">
           <div class="col-12 col-md-4 col-lg-3">
             <label for="slcContaGerencialCampo">Campo</label>
             <select name="slcContaGerencialCampo" id="slcContaGerencialCampo" class="form-control form-control-sm" required>
@@ -287,6 +289,8 @@ require_once 'templates/scripts.php';
     $('#numUsuario').val(id);
     $('#txtNomeUsuario').val(nome);
     $('#modalUsuarios').modal('hide');
+    $('input[name="hdIdUsuario"]').val(id);
+    $('input[name="hdIdCentroCusto"]').val($('#numCentroCusto').val());
     listarContasGerenciaisGrid();
   }
 
@@ -294,6 +298,8 @@ require_once 'templates/scripts.php';
     $('#numCentroCusto').val(id);
     $('#txtNomeCentroCusto').val(descricao);
     $('#modalCentroCustos').modal('hide');
+    $('input[name="hdIdUsuario"]').val($('#numUsuario').val());
+    $('input[name="hdIdCentroCusto"]').val(id);
     listarContasGerenciaisGrid();
   }
 
@@ -471,11 +477,15 @@ require_once 'templates/scripts.php';
   }
 
   const listarContasGerenciaisModal = (dados = null) => {
+    let hdIdUsuario = $('input[name="hdIdUsuario"]').val(),
+      hdIdCentroCusto = $('input[name="hdIdCentroCusto"]').val();
     $.ajax({
       url: '../controller/centroCusto.php',
       type: 'post',
       data: (dados != null) ? dados : {
-        action: 'listarContasGerenciais'
+        action: 'listarContasGerenciais',
+        hdIdUsuario,
+        hdIdCentroCusto
       }
     }).done((data) => {
       let response = JSON.parse(data);

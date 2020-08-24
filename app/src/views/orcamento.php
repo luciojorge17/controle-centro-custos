@@ -288,14 +288,18 @@ require_once 'templates/scripts.php';
 
   const listarContasGerenciaisModal = () => {
     let campo = $('#slcContaGerencialCampo').val(),
-      pesquisa = $('#txtContaGerencialTexto').val();
+      pesquisa = $('#txtContaGerencialTexto').val(),
+      ano = $('#slcAno').val(),
+      centroCusto = $('#numCentroCusto').val();
     $.ajax({
       url: '../controller/centroCusto.php',
       type: 'post',
       data: {
         action: 'listarContasGerenciaisGridOrcamento',
         campo,
-        pesquisa
+        pesquisa,
+        ano,
+        centroCusto
       }
     }).done((data) => {
       let response = JSON.parse(data);

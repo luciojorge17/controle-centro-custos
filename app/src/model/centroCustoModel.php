@@ -170,7 +170,7 @@ function getContasGerenciaisCentroCustoOrcamentoAnual($condicao = null)
 {
   require '../../config/database.php';
   $where = (!empty($condicao)) ? 'WHERE ' . $condicao : '';
-  $sql = "SELECT NNOA.CD_ID, NNOA.CD_FILIAL, TCCG.DS_CONTA_GERENCIAL, NNOA.VL_TOTAL_ANO, NNOA.VL_MES_JAN, NNOA.VL_MES_FEV, NNOA.VL_MES_MAR, NNOA.VL_MES_ABR, NNOA.VL_MES_MAI, NNOA.VL_MES_JUN, NNOA.VL_MES_JUL, NNOA.VL_MES_AGO, NNOA.VL_MES_SET, NNOA.VL_MES_OUT, NNOA.VL_MES_NOV, NNOA.VL_MES_DEZ
+  $sql = "SELECT NNOA.CD_ID, NNOA.CD_FILIAL, NNOA.CD_CONTA_GERENCIAL, TCCG.DS_CONTA_GERENCIAL, NNOA.VL_TOTAL_ANO, NNOA.VL_MES_JAN, NNOA.VL_MES_FEV, NNOA.VL_MES_MAR, NNOA.VL_MES_ABR, NNOA.VL_MES_MAI, NNOA.VL_MES_JUN, NNOA.VL_MES_JUL, NNOA.VL_MES_AGO, NNOA.VL_MES_SET, NNOA.VL_MES_OUT, NNOA.VL_MES_NOV, NNOA.VL_MES_DEZ
             FROM TBL_NEWNORTE_ORCAMENTO_ANUAL NNOA 
               INNER JOIN TBL_CONTABIL_PLANO_CONTAS_GERENCIAL TCCG ON NNOA.CD_CONTA_GERENCIAL = TCCG.CD_CONTA_GERENCIAL 
                 WHERE $condicao 
@@ -183,6 +183,7 @@ function getContasGerenciaisCentroCustoOrcamentoAnual($condicao = null)
       'item' => $contador,
       'cd_id' => $cg->CD_ID,
       'cd_filial' => $cg->CD_FILIAL,
+      'cd_conta_gerencial' => $cg->CD_CONTA_GERENCIAL,
       'ds_conta_gerencial' => utf8_encode($cg->DS_CONTA_GERENCIAL),
       'vl_total_ano' => number_format($cg->VL_TOTAL_ANO, 2, ',', '.'),
       'vl_mes_jan' => number_format($cg->VL_MES_JAN, 2, ',', '.'),

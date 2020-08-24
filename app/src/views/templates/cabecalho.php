@@ -116,7 +116,7 @@ $meses = [
       }
       if (isAdministrador($_SESSION['idUsuario'])) {
       ?>
-        <li class="<?php echo $active[5]; ?>"><a href="orcamento.php">Cadastrar Orçamento</a></li>
+        <li class="<?php echo $active[5]; ?>"><a href="orcamento.php">Cadastrar orçamento</a></li>
       <?php
       }
       ?>

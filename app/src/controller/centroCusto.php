@@ -34,7 +34,10 @@ switch ($action) {
     echo json_encode($queryContasGerenciais);
     break;
   case 'listarContasGerenciais':
+    $idUsuario = $_POST['hdIdUsuario'];
+    $centroCusto = $_POST['hdIdCentroCusto'];
     $filial = $_SESSION['filial'];
+    $queryContasJaUsadas = getContasGerenciaisUsuarioCentroCusto($idUsuario, $centroCusto, $filial);
     $empresa = ($_SESSION['filial'] == 0) ? 0 : getIdEmpresa($_SESSION['filial']);
     $campo = (isset($_POST['slcContaGerencialCampo'])) ? $_POST['slcContaGerencialCampo'] : null;
     $texto = (isset($_POST['txtContaGerencialTexto'])) ? $_POST['txtContaGerencialTexto'] : null;
@@ -47,6 +50,18 @@ switch ($action) {
       $condicao = ($campo == 'contaGerencial') ? "DS_CONTA_GERENCIAL LIKE '%$texto%'" : "DS_CLASSIFICACAO LIKE '$texto%'";
       if ($empresa != 0) {
         $condicao .= " AND CD_EMPRESA = $empresa";
+      }
+    }
+    if(!empty($queryContasJaUsadas)){
+      $contasJaUsadas = [];
+      foreach($queryContasJaUsadas as $c){
+        array_push($contasJaUsadas, $c['cd_conta_gerencial']);
+      }
+      $contasJaUsadas = implode(',', $contasJaUsadas);
+      if($condicao == ''){
+        $condicao .= "CD_CONTA_GERENCIAL NOT IN ($contasJaUsadas)";
+      } else{
+        $condicao .= " AND CD_CONTA_GERENCIAL NOT IN ($contasJaUsadas)";
       }
     }
     $queryContasGerenciais = getContasGerenciais($condicao);
@@ -202,7 +217,16 @@ switch ($action) {
     echo json_encode(['status' => 1]);
     break;
   case 'listarContasGerenciaisGridOrcamento':
+    //
     $filial = $_SESSION['filial'];
+    $ano = $_POST['ano'];
+    $centroCusto = $_POST['centroCusto'];
+    $condicao = "NNOA.DT_ANO = '$ano' AND NNOA.CD_CENTRO_CUSTO = $centroCusto";
+    if ($filial > 0) {
+      $condicao .= " AND NNOA.CD_FILIAL = $filial";
+    }
+    $queryContasJaUsadas = getContasGerenciaisCentroCustoOrcamentoAnual($condicao); 
+    //
     $empresa = ($_SESSION['filial'] == 0) ? 0 : getIdEmpresa($_SESSION['filial']);
     $campo = (isset($_POST['campo'])) ? $_POST['campo'] : null;
     $texto = (isset($_POST['pesquisa'])) ? $_POST['pesquisa'] : null;
@@ -214,6 +238,18 @@ switch ($action) {
       }
     } else if ($empresa != 0) {
       $condicao .= "CD_EMPRESA = $empresa";
+    }
+    if(!empty($queryContasJaUsadas)){
+      $contasJaUsadas = [];
+      foreach($queryContasJaUsadas as $c){
+        array_push($contasJaUsadas, $c['cd_conta_gerencial']);
+      }
+      $contasJaUsadas = implode(',', $contasJaUsadas);
+      if($condicao == ''){
+        $condicao .= "CD_CONTA_GERENCIAL NOT IN ($contasJaUsadas)";
+      } else{
+        $condicao .= " AND CD_CONTA_GERENCIAL NOT IN ($contasJaUsadas)";
+      }
     }
     $queryContasGerenciais = getContasGerenciais($condicao);
     echo json_encode($queryContasGerenciais);
