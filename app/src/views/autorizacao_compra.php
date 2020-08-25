@@ -172,10 +172,11 @@ require_once 'templates/scripts.php';
     listaItensOrdemDeCompra(idOrdem);
     listaContasGerenciaisOrdemDeCompra(idOrdem);
     getObservacao(idOrdem);
-    $(`#resultContasGerenciaisOrdem tr`).removeClass('bg-primary');
-    $(`#resultContasGerenciaisOrdem tr`).removeClass('text-white');
+    $(`#resultListaOrdens tr`).removeClass('bg-primary');
+    $(`#resultListaOrdens tr`).removeClass('text-white');
     $(`#ordem-compra-${idOrdem}`).addClass('bg-primary');
     $(`#ordem-compra-${idOrdem}`).addClass('text-white');
+    $(`#resultListaOrdens tr input[type="checkbox"]`).prop('disabled', false);
   }
 
   const listaItensOrdemDeCompra = (idOrdem) => {
@@ -229,7 +230,8 @@ require_once 'templates/scripts.php';
           let response = JSON.parse(data);
           if (response.status == true) {
             bg = 'bg-danger text-white';
-            $('#resultListaOrdens tr input[type="checkbox"]').prop('disabled', true);
+            $(`#resultListaOrdens #ordem-compra-${idOrdem} input[type="checkbox"]`).prop('disabled', true);
+            $(`#resultListaOrdens #ordem-compra-${idOrdem} input[type="checkbox"]`).prop('checked', false);
             alert('Centro de custo/Conta gerencial informado não relacionado com o usuário logado. Favor corrigir para realizar a autorização!');
           }
           html =
