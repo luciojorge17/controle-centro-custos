@@ -41,4 +41,11 @@ switch ($action) {
       reprovaOrdem($ordem, $idUsuario, $data);
     }
     break;
+  case 'verificacaoUsuario':
+    $idUsuario = $_SESSION['idUsuario'];
+    $contaGerencial = $_POST['contaGerencial'];
+    $centroCusto = $_POST['centroCusto'];
+    $condicao = "CD_CODUSUARIO = $idUsuario AND CD_CONTA_GERENCIAL = $contaGerencial AND CD_CENTRO_CUSTO = $centroCusto";
+    echo json_encode(['status' => getValidacaoUsuario($condicao)]);
+    break;
 }

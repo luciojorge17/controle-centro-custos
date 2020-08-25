@@ -71,7 +71,7 @@ require_once 'templates/cabecalho.php';
     </div>
     <div class="row mt-4">
       <div class="col-12">
-        Contas Gerenciais
+        Desdobro dos custos
       </div>
       <div class="col-12">
         <table class="table table-sm table-striped">
@@ -79,7 +79,8 @@ require_once 'templates/cabecalho.php';
             <tr>
               <th scope="col">Cód</th>
               <th scope="col">Classificação</th>
-              <th scope="col">Descrição</th>
+              <th scope="col">Centro Custo</th>
+              <th scope="col">Conta Gerencial</th>
               <th scope="col" class="text-right">Vl. Limite</th>
               <th scope="col" class="text-right">Vl. Utilizado</th>
               <th scope="col" class="text-right">Vl. Disponível</th>
@@ -139,12 +140,13 @@ require_once 'templates/scripts.php';
     }).done((data) => {
       let response = JSON.parse(data);
       let html = ``;
+      let primeira = null;
       $.each(response, (index, ordem) => {
         if (index == 0) {
-          detalhesOrdem(ordem.cd_ordem_compra);
+          primeira = ordem.cd_ordem_compra;
         }
         html +=
-          `<tr onclick="detalhesOrdem(${ordem.cd_ordem_compra})" style="cursor: pointer;">
+          `<tr id="ordem-compra-${ordem.cd_ordem_compra}" onclick="detalhesOrdem(${ordem.cd_ordem_compra})" style="cursor: pointer;">
             <th scope="row">${ordem.cd_ordem_compra}</th>
             <td>${ordem.cd_filial}</td>
             <td class="text-center">${ordem.dt_emissao}</td>
@@ -159,13 +161,21 @@ require_once 'templates/scripts.php';
           </tr>`;
       });
       $('#resultListaOrdens').html(html);
+      if (primeira != null) {
+        detalhesOrdem(primeira);
+      }
     });
   }
 
   const detalhesOrdem = (idOrdem) => {
+    $('#resultContasGerenciaisOrdem').empty();
     listaItensOrdemDeCompra(idOrdem);
     listaContasGerenciaisOrdemDeCompra(idOrdem);
     getObservacao(idOrdem);
+    $(`#resultContasGerenciaisOrdem tr`).removeClass('bg-primary');
+    $(`#resultContasGerenciaisOrdem tr`).removeClass('text-white');
+    $(`#ordem-compra-${idOrdem}`).addClass('bg-primary');
+    $(`#ordem-compra-${idOrdem}`).addClass('text-white');
   }
 
   const listaItensOrdemDeCompra = (idOrdem) => {
@@ -206,18 +216,36 @@ require_once 'templates/scripts.php';
       let response = JSON.parse(data);
       let html = ``;
       $.each(response, (index, cg) => {
-        html +=
-          `<tr>
+        let bg = '';
+        $.ajax({
+          url: '../controller/ordemCompra.php',
+          type: 'post',
+          data: {
+            action: 'verificacaoUsuario',
+            centroCusto: cg.cd_centro_custo,
+            contaGerencial: cg.cd_conta_gerencial
+          }
+        }).done((data) => {
+          let response = JSON.parse(data);
+          if (response.status == true) {
+            bg = 'bg-danger text-white';
+            $('#resultListaOrdens tr input[type="checkbox"]').prop('disabled', true);
+            alert('Centro de custo/Conta gerencial informado não relacionado com o usuário logado. Favor corrigir para realizar a autorização!');
+          }
+          html =
+            `<tr class="${bg}">
             <th scope="row">${cg.cd_conta_gerencial}</th>
             <td>${cg.ds_classificacao}</td>
+            <td>${cg.ds_centro_custo}</td>
             <td>${cg.ds_conta_gerencial}</td>
             <td class="text-right">${cg.vl_limite}</td>
             <td class="text-right">${cg.vl_utilizado}</td>
             <td class="text-right">${cg.vl_disponivel}</td>
             <td class="text-right">${cg.vl_ordem_compra}</td>
           </tr>`;
+          $('#resultContasGerenciaisOrdem').append(html);
+        });
       });
-      $('#resultContasGerenciaisOrdem').html(html);
     });
   }
 
