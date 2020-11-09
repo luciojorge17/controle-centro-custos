@@ -53,22 +53,20 @@ switch ($action) {
         $colunaMes = 'VL_MES_DEZ';
         break;
     }
-    $condicao = "NNOA.CD_CENTRO_CUSTO = $idCentroCusto AND NNOA.DT_ANO = '$ano' AND SCD.CD_ORIGEM = 20 AND SCOC.CD_USUARIO_AUTORIZOU IS NOT NULL AND CD_USUARIO_REPROVOU IS NULL AND SCOC.CD_STATUS = 2 AND MONTH(DT_AUTORIZACAO) = '$mes'";
+    $condicao = "NNOA.CD_CENTRO_CUSTO = $idCentroCusto AND NNOA.DT_ANO = '$ano' AND SCD.CD_ORIGEM = 20 AND SCOC.CD_USUARIO_AUTORIZOU IS NOT NULL AND CD_USUARIO_REPROVOU IS NULL AND SCOC.CD_STATUS = 2 AND MONTH(DT_AUTORIZACAO) = '$mes' AND YEAR(DT_AUTORIZACAO) = '$ano'";
     if ($filial > 0) {
       $condicao .= " AND NNOA.CD_FILIAL = $filial AND SCOC.CD_FILIAL = $filial";
     }
-    if(!empty($queryContasUsuario)){
-      $contasUsuario = [];
-      foreach($queryContasUsuario as $c){
-        array_push($contasUsuario, $c['cd_conta_gerencial']);
-      }
-      $contasUsuario = implode(',', $contasUsuario);
-      $condicao .= " AND SCD.CD_CONTA_GERENCIAL IN ($contasUsuario)";
-      $retorno = getAcompanhamento($condicao, $colunaMes);
-      echo json_encode($retorno);
-    } else{
-      echo '';
-    }
+    // if (!empty($queryContasUsuario)) {
+    //   $contasUsuario = [];
+    //   foreach ($queryContasUsuario as $c) {
+    //     array_push($contasUsuario, $c['cd_conta_gerencial']);
+    //   }
+    //   $contasUsuario = implode(',', $contasUsuario);
+    //   $condicao .= " AND SCD.CD_CONTA_GERENCIAL IN ($contasUsuario)";
+    // }
+    $retorno = getAcompanhamento($condicao, $colunaMes);
+    echo json_encode($retorno);
     break;
   case 'detalhes':
     $idCentroCusto = $_POST['centroCusto'];
@@ -77,21 +75,19 @@ switch ($action) {
     $mes = $_POST['mes'];
     $filial = $_SESSION['filial'];
     $queryContasUsuario = getContasGerenciaisUsuarioCentroCusto($idUsuario, $idCentroCusto, $filial);
-    $condicao = "SCOC.CD_USUARIO_AUTORIZOU IS NOT NULL AND SCOC.CD_USUARIO_REPROVOU IS NULL AND YEAR(SCOC.DT_ATUALIZACAO) = '$ano' AND MONTH(SCOC.DT_ATUALIZACAO) = '$mes' AND SCD.CD_CENTRO_CUSTO = $idCentroCusto AND SCD.DS_CONTA_GERENCIAL IS NOT NULL";
+    $condicao = "SCOC.CD_USUARIO_AUTORIZOU IS NOT NULL AND SCOC.CD_USUARIO_REPROVOU IS NULL AND YEAR(SCOC.DT_ATUALIZACAO) = '$ano' AND MONTH(SCOC.DT_ATUALIZACAO) = '$mes' AND SCD.CD_CENTRO_CUSTO = $idCentroCusto AND SCD.DS_CONTA_GERENCIAL IS NOT NULL AND SCOC.CD_STATUS = 2 AND MONTH(DT_AUTORIZACAO) = '$mes' AND YEAR(DT_AUTORIZACAO) = '$ano'";
     if ($filial > 0) {
       $condicao .= " AND SCOC.CD_FILIAL = $filial";
-    } 
-    if(!empty($queryContasUsuario)){
-      $contasUsuario = [];
-      foreach($queryContasUsuario as $c){
-        array_push($contasUsuario, $c['cd_conta_gerencial']);
-      }
-      $contasUsuario = implode(',', $contasUsuario);
-      $condicao .= " AND SCD.CD_CONTA_GERENCIAL IN ($contasUsuario)";
-      $retorno = getAcompanhamentoDetalhes($condicao);
-      echo json_encode($retorno);
-    } else{
-      echo '';
     }
+    // if (!empty($queryContasUsuario)) {
+    //   $contasUsuario = [];
+    //   foreach ($queryContasUsuario as $c) {
+    //     array_push($contasUsuario, $c['cd_conta_gerencial']);
+    //   }
+    //   $contasUsuario = implode(',', $contasUsuario);
+    //   $condicao .= " AND SCD.CD_CONTA_GERENCIAL IN ($contasUsuario)";
+    // }
+    $retorno = getAcompanhamentoDetalhes($condicao);
+    echo json_encode($retorno);
     break;
 }

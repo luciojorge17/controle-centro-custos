@@ -98,7 +98,7 @@ require_once 'templates/scripts.php';
     }).done((data) => {
       let response = JSON.parse(data);
       let html = '';
-      if (response != '') {
+      if (response.dados != '') {
         html =
           `<div class="col-12 text-center mt-3 mb-1">
           <h4>Contas Gerenciais</h4>
@@ -143,7 +143,8 @@ require_once 'templates/scripts.php';
       } else {
         html =
           `<div class="col-12 text-center mt-3 mb-1">
-            Nenhum resultado encontrado
+            <p>Nenhum resultado encontrado</p>
+            <small class="text-muted">${response.sql}</small>
           </div>`;
         $('#result').html(html);
       }
@@ -178,7 +179,7 @@ require_once 'templates/scripts.php';
     }).done((data) => {
       let response = JSON.parse(data);
       let html = '';
-      if (response != '') {
+      if (response.dados != '') {
         html = `<div class="col-12 mb-3"><div class="accordion" id="accordion">`;
         let contador = 1;
         $.each(response, (index, dados) => {
@@ -230,7 +231,8 @@ require_once 'templates/scripts.php';
       } else {
         html =
           `<div class="col-12 text-center mt-3 mb-1">
-            Nenhum resultado encontrado
+            <p>Nenhum resultado encontrado</p>
+            <small class="text-muted">${response.sql}</small>
           </div>`;
         $('#result').html(html);
       }

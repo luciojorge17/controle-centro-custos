@@ -11,6 +11,8 @@ function getAcompanhamento($condicao, $mes)
 		    inner JOIN SEL_COMPRAS_ORDEM_COMPRA SCOC ON SCOC.CD_ORDEM_COMPRA = SCD.CD_LANCAMENTO AND SCD.CD_ORIGEM = 20
           $where
             GROUP BY TCCG.DS_CONTA_GERENCIAL, NNOA.CD_CONTA_GERENCIAL, NNOA.$mes";
+            // ini_set("xdebug.var_display_max_data", -1);
+            // var_dump($sql);
   $consulta = odbc_exec($conexao, $sql);
   $dados = [];
   while ($linha = odbc_fetch_object($consulta)) {
@@ -21,7 +23,7 @@ function getAcompanhamento($condicao, $mes)
       'limite' => number_format($linha->LIMITE, 2, ',', '.')
     ]);
   }
-  return $dados;
+  return ['dados' => $dados,'sql' => $sql];
 }
 function getAcompanhamentoDetalhes($condicao)
 {
@@ -44,5 +46,5 @@ function getAcompanhamentoDetalhes($condicao)
       'valor' => number_format($linha->VL_CUSTO, 2, ',', '.')
     ]);
   }
-  return $dados;
+  return ['dados' => $dados,'sql' => $sql];
 }
